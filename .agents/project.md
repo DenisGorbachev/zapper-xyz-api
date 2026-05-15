@@ -23,12 +23,6 @@ Requirements:
   - `strum`
 - Every version under `dependencies` key must be specified only up to the first non-zero part (good: "1", "0.3", bad: "1.0", "0.3.3")
 
-## `graphql` dir
-
-- Must contain `schema.graphql`
-- Must contain `queries.graphql`
-  - Must contain all queries
-
 ## `zapper-xyz-api` lib crate
 
 A Rust crate that exports the types related to zapper.xyz API.
@@ -36,6 +30,10 @@ A Rust crate that exports the types related to zapper.xyz API.
 Requirements:
 
 - Must use `graphql_client` to execute requests
+- Must contain `graphql` dir
+  - Must contain `schema.graphql` file
+  - Must contain `queries.graphql` file
+    - Must contain all queries
 - Must implement pagination for queries
 - Must implement rate limiting for queries
 
