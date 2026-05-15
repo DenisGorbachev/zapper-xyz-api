@@ -1,0 +1,54 @@
+schema {
+  query: Query
+}
+
+scalar Address
+
+type Query {
+  portfolioV2(addresses: [Address!]!, chainIds: [Int!]): PortfolioV2!
+}
+
+type PortfolioV2 {
+  tokenBalances: PortfolioV2TokenBalances!
+}
+
+type PortfolioV2TokenBalances {
+  totalBalanceUSD: Float!
+  byToken(first: Int = 25, after: String): PortfolioV2TokenBalanceByTokenConnection!
+}
+
+type PortfolioV2TokenBalanceByTokenConnection {
+  totalCount: Int!
+  edges: [PortfolioV2TokenBalanceByTokenEdge!]!
+  pageInfo: PageInfo!
+}
+
+type PortfolioV2TokenBalanceByTokenEdge {
+  node: PortfolioV2TokenBalanceByToken!
+  cursor: String!
+}
+
+type PortfolioV2TokenBalanceByToken {
+  tokenAddress: String!
+  name: String!
+  symbol: String!
+  decimals: Float!
+  price: Float!
+  balance: Float!
+  balanceUSD: Float!
+  balanceRaw: String!
+  imgUrlV2: String
+  network: NetworkObject!
+}
+
+type NetworkObject {
+  name: String!
+  chainId: Int!
+}
+
+type PageInfo {
+  hasPreviousPage: Boolean!
+  hasNextPage: Boolean!
+  startCursor: String
+  endCursor: String
+}

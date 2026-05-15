@@ -13,8 +13,33 @@ This is a module-level comment for a Rust lib
 
 ## Installation
 
+Install as executable:
+
+```shell
+cargo install --locked zapper-xyz-api
+```
+
+Install as library dependency in your package:
+
 ```shell
 cargo add zapper-xyz-api
+```
+
+## Usage
+
+```shell
+API client for zapper.xyz
+
+Usage: zapper-xyz-api --key <KEY> <COMMAND>
+
+Commands:
+  portfolio  
+  help       Print this message or the help of the given subcommand(s)
+
+Options:
+      --key <KEY>  [env: ZAPPER_API_KEY]
+  -h, --help       Print help
+  -V, --version    Print version
 ```
 
 ## Gratitude

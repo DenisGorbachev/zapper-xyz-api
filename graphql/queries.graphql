@@ -1,0 +1,34 @@
+query PortfolioV2Query($addresses: [Address!]!, $chainIds: [Int!], $first: Int!, $after: String) {
+  portfolioV2(addresses: $addresses, chainIds: $chainIds) {
+    tokenBalances {
+      totalBalanceUSD
+      byToken(first: $first, after: $after) {
+        totalCount
+        edges {
+          cursor
+          node {
+            tokenAddress
+            name
+            symbol
+            decimals
+            price
+            balance
+            balanceUSD
+            balanceRaw
+            imgUrlV2
+            network {
+              name
+              chainId
+            }
+          }
+        }
+        pageInfo {
+          hasPreviousPage
+          hasNextPage
+          startCursor
+          endCursor
+        }
+      }
+    }
+  }
+}

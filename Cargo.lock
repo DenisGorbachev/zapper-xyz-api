@@ -1876,6 +1876,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "url-macro"
+version = "0.2.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "46f8fd02d998459be6962aa74831961202461c1545cf056725e2c73b9f860c91"
+dependencies = [
+ "url",
+]
+
+[[package]]
 name = "utf8_iter"
 version = "1.0.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2405,10 +2414,12 @@ dependencies = [
  "reqwest",
  "secrecy",
  "serde",
+ "serde_json",
  "thiserror 2.0.18",
  "timestamp-please",
  "tokio",
  "url",
+ "url-macro",
 ]
 
 [[package]]

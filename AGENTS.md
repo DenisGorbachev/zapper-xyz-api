@@ -1985,11 +1985,13 @@ governor = "0.10"
 reqwest = { version = "0.13", features = ["json", "query"] }
 secrecy = "0.10"
 serde = { version = "1", features = ["derive"] }
+serde_json = "1"
 thiserror = "2"
 timestamp-please = { version = "0.2", features = ["serde"] }
 url = "2"
-clap = { version = "4.5", features = ["derive", "env"] }
-tokio = { version = "1.46", features = ["rt", "rt-multi-thread", "macros", "fs", "net"] }
+url-macro = "0.2"
+clap = { version = "4", features = ["derive", "env"] }
+tokio = { version = "1", features = ["rt", "rt-multi-thread", "macros", "fs", "net"] }
 
 #derive-getters = { version = "0.5.0", features = ["auto_copy_getters"] }
 #derive-new = "0.7.0"
@@ -2002,11 +2004,60 @@ tokio = { version = "1.46", features = ["rt", "rt-multi-thread", "macros", "fs",
 #subtype = { git = "https://github.com/DenisGorbachev/subtype" }
 ```
 
+### src/main.rs
+
+```rust
+use clap::Parser;
+use errgonomic::exit_result;
+use std::process::ExitCode;
+use zapper_xyz_api::Command;
+
+#[tokio::main]
+async fn main() -> ExitCode {
+    let args = Command::parse();
+    let result = args.run().await;
+    exit_result(result)
+}
+
+#[test]
+fn verify_cli() {
+    use clap::CommandFactory;
+    Command::command().debug_assert();
+}
+```
+
 ### src/lib.rs
 
 ```rust
 //! This is a module-level comment for a Rust lib
 
 #![deny(clippy::arithmetic_side_effects)]
+
+mod address;
+pub use address::*;
+
+mod chain_id;
+pub use chain_id::*;
+
 mod client;
+pub use client::*;
+
+mod command;
+pub use command::*;
+
+mod key;
+pub use key::*;
+
+pub mod portfolio_v2_query;
+pub use portfolio_v2_query::portfolio_v2_query as portfolio_v2_query_types;
+pub use portfolio_v2_query::*;
+
+mod portfolio_page_size;
+pub use portfolio_page_size::*;
+
+mod portfolio_v2_request;
+pub use portfolio_v2_request::*;
+
+mod rate_limits;
+pub use rate_limits::*;
 ```
