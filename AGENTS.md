@@ -480,6 +480,9 @@ Requirements:
 
 A Rust crate that provides a CLI for zapper.xyz API.
 
+* Must contain [Command](#command)
+* Must contain [PortfolioCommand](#portfoliocommand)
+
 ### Key
 
 A type alias for API key as `secrecy::SecretString`.
@@ -529,6 +532,26 @@ A struct that derives `GraphQLQuery`.
   * `PartialEq`
   * `Clone`
   * `Debug`
+
+### Command
+
+A Rust struct that represents a CLI command.
+
+* Must have fields:
+  * `key: Key`
+* Must have methods:
+  * `run`
+    * Must construct `client`
+    * Must pass the `client` by value to the subcommand
+
+### PortfolioCommand
+
+* Must have fields:
+  * `addresses: Vec<String>`
+* Must have methods:
+  * `run`
+    * Must query the `portfolioV2` endpoint with `addresses` parameter
+    * Must stream the results to `stdout`
 
 ## Error handling
 
@@ -1836,6 +1859,8 @@ serde = { version = "1", features = ["derive"] }
 thiserror = "2"
 timestamp-please = { version = "0.2", features = ["serde"] }
 url = "2"
+clap = { version = "4.5", features = ["derive", "env"] }
+tokio = { version = "1.46", features = ["rt", "rt-multi-thread", "macros", "fs", "net"] }
 
 #derive-getters = { version = "0.5.0", features = ["auto_copy_getters"] }
 #derive-new = "0.7.0"
