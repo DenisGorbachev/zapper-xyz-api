@@ -1,10 +1,9 @@
 use core::num::NonZeroU32;
-use derive_more::{From, Into};
 use governor::{DefaultDirectRateLimiter, Quota, RateLimiter};
 use std::cell::LazyCell;
 use std::time::Duration;
 
-#[derive(From, Into, Debug)]
+#[derive(Debug)]
 pub struct RateLimits {
     pub tokens: LazyCell<DefaultDirectRateLimiter>,
     pub nft_metadata: LazyCell<DefaultDirectRateLimiter>,

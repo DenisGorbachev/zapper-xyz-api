@@ -1,6 +1,5 @@
 use crate::portfolio_v2_query_types::ResponseData;
 use crate::{Key, PortfolioV2Query, PortfolioV2Request, PortfolioV2RequestVariablesError, RateLimits};
-use derive_more::{From, Into};
 use errgonomic::{handle, handle_opt, handle_opt_take};
 use graphql_client::{GraphQLQuery, Response};
 use reqwest::Client as HttpClient;
@@ -12,7 +11,7 @@ use thiserror::Error;
 use url::Url;
 use url_macro::url;
 
-#[derive(From, Into, Clone, Debug)]
+#[derive(Clone, Debug)]
 pub struct Client {
     pub inner: HttpClient,
     pub base: Url,
@@ -106,10 +105,16 @@ pub enum ConvertKeyAndUrlToClientError {
 
 impl From<(HttpClient, Url)> for Client {
     fn from((inner, base): (HttpClient, Url)) -> Self {
+        Self::from((inner, base, RateLimits::default()))
+    }
+}
+
+impl From<(HttpClient, Url, RateLimits)> for Client {
+    fn from((inner, base, limits): (HttpClient, Url, RateLimits)) -> Self {
         Self {
             inner,
             base,
-            limits: RateLimits::default(),
+            limits,
         }
     }
 }
