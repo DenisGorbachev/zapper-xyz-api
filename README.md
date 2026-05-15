@@ -5,6 +5,7 @@
 # API client for zapper.xyz
 
 [![Build](https://github.com/DenisGorbachev/zapper-xyz-api/actions/workflows/ci.yml/badge.svg)](https://github.com/DenisGorbachev/zapper-xyz-api)
+[![Documentation](https://docs.rs/zapper-xyz-api/badge.svg)](https://docs.rs/zapper-xyz-api)
 
 <!-- crate documentation start -->
 This is a module-level comment for a Rust lib
