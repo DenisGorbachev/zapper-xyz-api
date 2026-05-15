@@ -1,9 +1,3 @@
-- B001: The spec requires `Client` to derive `Eq` and `PartialEq`, but `reqwest::Client` does not implement equality, so the exact derive cannot compile. Workarounds:
-  - Compare only data fields with meaningful equality, such as the base URL, in a manual implementation.
-  - Remove `Eq` and `PartialEq` from the required derives for `Client`.
-- B002: The spec requires `RateLimits` to derive `Clone`, `Eq`, and `PartialEq`, but live `LazyCell<DefaultDirectRateLimiter>` fields cannot be faithfully cloned or compared without discarding limiter state or inventing equality. Workarounds:
-  - Store shared limiter handles such as `Arc<LazyCell<DefaultDirectRateLimiter>>` and compare pointer identity.
-  - Remove `Clone`, `Eq`, and `PartialEq` from the required derives for `RateLimits`.
 - B003: Live CLI balance verification against Zapper could not be completed because TCP connections to `https://public.zapper.xyz/graphql` time out from this environment, even when `ZAPPER_API_KEY` is provided through `fnox exec --profile "test"`. Workarounds:
   - Run the CLI from a network environment that can reach `public.zapper.xyz`.
   - Add an integration-test seam that points `Client` at a local mock GraphQL server for non-network verification.

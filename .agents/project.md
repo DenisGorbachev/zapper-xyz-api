@@ -55,7 +55,7 @@ A Rust struct that contains the fields for data that is shared between API reque
 Requirements:
 
 - Must have attributes:
-  - `#[derive(From, Into, Eq, PartialEq, Clone, Debug)]`
+  - `#[derive(Clone, Debug)]`
 - Must have fields:
   - `pub inner: HttpClient` (`use reqwest::Client as HttpClient;`)
   - `pub base: Url`
@@ -74,13 +74,14 @@ Requirements:
         - Must mark the header as sensitive
     - Must call `Self::from((inner, base))`
   - `From<(HttpClient, Url)>`
+  - `From<(HttpClient, Url, RateLimits)>`
 
 ## RateLimits
 
 A Rust struct that has one field per limit in [rate limits](./docs/build.zapper.xyz/rate-limits.md).
 
 - Must have attributes:
-  - `#[derive(From, Into, Eq, PartialEq, Clone, Debug)]`
+  - `#[derive(Debug)]`
 - Every field must be a `LazyCell<DefaultDirectRateLimiter>` from `governor`
 - Must have an `impl Default`
   - Must construct rate limiters according to documentation
