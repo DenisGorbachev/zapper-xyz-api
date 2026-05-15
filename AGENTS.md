@@ -429,14 +429,14 @@ You are running in a sandbox with limited network access.
 
 ```toml
 [package]
-name = "rust-public-lib-template"
+name = "zapper-xyz-api"
 version = "0.1.0"
 edition = "2024"
 rust-version = "1.85.0"
-description = "A template for a public Rust library"
+description = "Zapper.xyz API client"
 license = "Apache-2.0 OR MIT"
-homepage = "https://github.com/DenisGorbachev/rust-public-lib-template"
-repository = "https://github.com/DenisGorbachev/rust-public-lib-template"
+homepage = "https://github.com/DenisGorbachev/zapper-xyz-api"
+repository = "https://github.com/DenisGorbachev/zapper-xyz-api"
 readme = "README.md"
 keywords = []
 categories = []
@@ -458,11 +458,11 @@ exclude = [
 ]
 
 [package.metadata.details]
-title = "A template for a public Rust library"
+title = "Zapper.xyz API client"
 tagline = ""
 summary = ""
 announcement = ""
-readme = { generate = false }
+readme = { generate = true }
 
 [dependencies]
 #derive-getters = { version = "0.5.0", features = ["auto_copy_getters"] }
