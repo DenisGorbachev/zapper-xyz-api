@@ -604,6 +604,8 @@ Requirements:
     * Must contain all queries
 * Must implement pagination for queries
 * Must implement rate limiting for queries
+* Must define Rust types for the following GraphQL scalar types from `schema.graphql`:
+  * `Address`
 
 ### `zapper-xyz-api` bin crate
 
@@ -663,6 +665,17 @@ A struct that derives `GraphQLQuery`.
   * `Clone`
   * `Debug`
 
+### `PortfolioV2TokenBalancesByAccount` query
+
+A GraphQL query that returns all token balances by account.
+
+* Must use `portfolioV2` edge with all available arguments
+* Must use `tokenBalances` edge
+* Must use `byAccount` edge
+* Must use `tokenBalances` edge
+* Must paginate both `byAccount` and `tokenBalances` edges
+* Must return all available fields from mentioned edges
+
 ### Command
 
 A Rust struct that represents a CLI command.
@@ -680,8 +693,8 @@ A Rust struct that represents a CLI command.
   * `addresses: Vec<String>`
 * Must have methods:
   * `run`
-    * Must query the `portfolioV2` endpoint with `addresses` parameter
-    * Must stream the results to `stdout`
+    * Must send requests for [`PortfolioV2TokenBalancesByAccount` query](#portfoliov2tokenbalancesbyaccount-query)
+    * Must stream the results to `stdout` as soon as they are available
 
 ## Error handling
 
