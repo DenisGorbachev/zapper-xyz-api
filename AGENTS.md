@@ -433,7 +433,7 @@ name = "zapper-xyz-api"
 version = "0.1.0"
 edition = "2024"
 rust-version = "1.85.0"
-description = "Zapper.xyz API client"
+description = "API client for zapper.xyz"
 license = "Apache-2.0 OR MIT"
 homepage = "https://github.com/DenisGorbachev/zapper-xyz-api"
 repository = "https://github.com/DenisGorbachev/zapper-xyz-api"
@@ -458,7 +458,7 @@ exclude = [
 ]
 
 [package.metadata.details]
-title = "Zapper.xyz API client"
+title = "API client for zapper.xyz"
 tagline = ""
 summary = ""
 announcement = ""
