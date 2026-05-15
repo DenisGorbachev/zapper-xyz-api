@@ -1855,5 +1855,4 @@ url = "2"
 
 #![deny(clippy::arithmetic_side_effects)]
 mod client;
-pub use client::*;
 ```

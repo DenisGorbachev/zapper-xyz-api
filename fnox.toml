@@ -5,3 +5,9 @@ if_missing = "error"
 [providers]
 keychain = { type = "keychain", service = "zapper-xyz-api" }
 pass = { type = "password-store", prefix = "zapper-xyz-api/" }
+
+[profiles.test.secrets]
+ZAPPER_API_KEY = { provider = "pass", value = "TEST_ZAPPER_API_KEY" }
+
+[profiles.prod.secrets]
+ZAPPER_API_KEY = { provider = "keychain", value = "PROD_ZAPPER_API_KEY" }
