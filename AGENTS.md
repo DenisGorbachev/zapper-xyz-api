@@ -480,6 +480,47 @@ Requirements:
 
 A Rust crate that provides a CLI for zapper.xyz API.
 
+### Key
+
+A type alias for API key as `secrecy::SecretString`.
+
+### Client
+
+A Rust struct that contains the fields for data that is shared between API requests.
+
+Requirements:
+
+* Must have attributes:
+  * `#[derive(From, Into, Eq, PartialEq, Clone, Debug)]`
+* Must have fields:
+  * `pub inner: HttpClient` (`use reqwest::Client as HttpClient;`)
+  * `pub base: Url`
+  * `pub limits: RateLimits`
+* Must have methods:
+  * `pub fn new(key: impl Into<Key>) -> Result<Self, ClientNewError>`
+    * Must call `Self::try_from`
+  * `pub fn default_base_url() -> Url`
+    * `url!("https://public.zapper.xyz/graphql")` (use `url-macro` crate)
+* Must have impls:
+  * `TryFrom<Key>`
+    * Must call `Self::try_from((key, Self::default_base_url()))`
+  * `TryFrom<(Key, Url)>`
+    * Must construct `inner` client
+      * Must set the `x-zapper-api-key` header via `default_headers`
+        * Must mark the header as sensitive
+    * Must call `Self::from((inner, base))`
+  * `From<(HttpClient, Url)>`
+
+### RateLimits
+
+A Rust struct that has one field per limit in [rate limits](./docs/build.zapper.xyz/rate-limits.md).
+
+* Must have attributes:
+  * `#[derive(From, Into, Eq, PartialEq, Clone, Debug)]`
+* Every field must be a `LazyCell<DefaultDirectRateLimiter>` from `governor`
+* Must have an `impl Default`
+  * Must construct rate limiters according to documentation
+
 ### Query struct
 
 A struct that derives `GraphQLQuery`.
@@ -1786,8 +1827,16 @@ readme = { generate = true }
 
 [dependencies]
 graphql_client = { version = "0.16", features = ["graphql_query_derive"] }
+derive_more = { version = "2", features = ["full"] }
 errgonomic = "0.5"
-serde = { version = "1.0", features = ["derive"] }
+governor = "0.10"
+reqwest = { version = "0.13", features = ["json", "query"] }
+secrecy = "0.10"
+serde = { version = "1", features = ["derive"] }
+thiserror = "2"
+timestamp-please = { version = "0.2", features = ["serde"] }
+url = "2"
+
 #derive-getters = { version = "0.5.0", features = ["auto_copy_getters"] }
 #derive-new = "0.7.0"
 #derive_more = { version = "2.1.1", features = ["full"] }
@@ -1805,4 +1854,6 @@ serde = { version = "1.0", features = ["derive"] }
 //! This is a module-level comment for a Rust lib
 
 #![deny(clippy::arithmetic_side_effects)]
+mod client;
+pub use client::*;
 ```
