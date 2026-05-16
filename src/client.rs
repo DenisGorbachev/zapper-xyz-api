@@ -1,5 +1,5 @@
-use crate::portfolio_v2_query_types::ResponseData;
-use crate::{Key, PortfolioV2Query, PortfolioV2Request, PortfolioV2RequestVariablesError, RateLimits};
+use crate::portfolio_v2_token_balances_by_token_types::ResponseData;
+use crate::{Key, PortfolioV2TokenBalancesByToken, PortfolioV2TokenBalancesByTokenRequest, PortfolioV2TokenBalancesByTokenRequestVariablesError, RateLimits};
 use errgonomic::{handle, handle_opt, handle_opt_take};
 use graphql_client::{GraphQLQuery, Response};
 use reqwest::Client as HttpClient;
@@ -33,14 +33,14 @@ impl Client {
         Duration::from_secs(30)
     }
 
-    pub async fn portfolio_v2(&self, request: PortfolioV2Request) -> Result<ResponseData, ClientPortfolioV2Error> {
-        use ClientPortfolioV2Error::*;
+    pub async fn portfolio_v2_token_balances_by_token(&self, request: PortfolioV2TokenBalancesByTokenRequest) -> Result<ResponseData, ClientPortfolioV2TokenBalancesByTokenError> {
+        use ClientPortfolioV2TokenBalancesByTokenError::*;
         LazyCell::force(&self.limits.portfolio_balances)
             .until_ready()
             .await;
         let base = self.base.clone();
         let variables = handle!(request.variables(), VariablesFailed, request, base);
-        let body = PortfolioV2Query::build_query(variables);
+        let body = PortfolioV2TokenBalancesByToken::build_query(variables);
         let request_builder = self.inner.post(base.clone()).json(&body);
         let response = handle!(request_builder.send().await, SendRequestFailed, request, base);
         let response = handle!(response.error_for_status(), ErrorForStatusFailed, request, base);
@@ -120,17 +120,17 @@ impl From<(HttpClient, Url, RateLimits)> for Client {
 }
 
 #[derive(Error, Debug)]
-pub enum ClientPortfolioV2Error {
+pub enum ClientPortfolioV2TokenBalancesByTokenError {
     #[error("failed to convert portfolioV2 request to GraphQL variables")]
-    VariablesFailed { source: PortfolioV2RequestVariablesError, request: PortfolioV2Request, base: Url },
+    VariablesFailed { source: PortfolioV2TokenBalancesByTokenRequestVariablesError, request: PortfolioV2TokenBalancesByTokenRequest, base: Url },
     #[error("failed to send portfolioV2 request")]
-    SendRequestFailed { source: reqwest::Error, request: PortfolioV2Request, base: Url },
+    SendRequestFailed { source: reqwest::Error, request: PortfolioV2TokenBalancesByTokenRequest, base: Url },
     #[error("portfolioV2 response status is not successful")]
-    ErrorForStatusFailed { source: reqwest::Error, request: PortfolioV2Request, base: Url },
+    ErrorForStatusFailed { source: reqwest::Error, request: PortfolioV2TokenBalancesByTokenRequest, base: Url },
     #[error("failed to deserialize portfolioV2 response")]
-    DeserializeResponseFailed { source: reqwest::Error, request: PortfolioV2Request, base: Url },
+    DeserializeResponseFailed { source: reqwest::Error, request: PortfolioV2TokenBalancesByTokenRequest, base: Url },
     #[error("portfolioV2 response contains {len} GraphQL errors", len = errors.len())]
-    ResponseContainsErrors { errors: Vec<graphql_client::Error>, request: PortfolioV2Request, base: Url },
+    ResponseContainsErrors { errors: Vec<graphql_client::Error>, request: PortfolioV2TokenBalancesByTokenRequest, base: Url },
     #[error("portfolioV2 response did not contain data")]
-    ResponseDataNotFound { request: PortfolioV2Request, base: Url },
+    ResponseDataNotFound { request: PortfolioV2TokenBalancesByTokenRequest, base: Url },
 }

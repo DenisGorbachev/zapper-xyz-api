@@ -1,23 +1,36 @@
-query PortfolioV2Query($addresses: [Address!]!, $chainIds: [Int!], $first: Int!, $after: String) {
+query PortfolioV2TokenBalancesByToken(
+  $addresses: [Address!]!
+  $chainIds: [Int!]
+  $first: Int!
+  $after: String
+) {
   portfolioV2(addresses: $addresses, chainIds: $chainIds) {
     tokenBalances {
       totalBalanceUSD
-      byToken(first: $first, after: $after) {
+      byToken(first: $first, after: $after, filters: { includeTokensWithMissingPrices: true }) {
         totalCount
         edges {
           cursor
           node {
+            id
             tokenAddress
+            networkId
             name
             symbol
             decimals
+            verified
             price
             balance
             balanceUSD
             balanceRaw
+            imgUrl
             imgUrlV2
+            isFavorite
+            balanceInCurrency
             network {
+              id
               name
+              slug
               chainId
             }
           }

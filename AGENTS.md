@@ -665,16 +665,16 @@ A struct that derives `GraphQLQuery`.
   * `Clone`
   * `Debug`
 
-### `PortfolioV2TokenBalancesByAccount` query
+### `PortfolioV2TokenBalancesByToken` query
 
-A GraphQL query that returns all token balances by account.
+A GraphQL query that returns all token balances for one account.
 
-* Must use `portfolioV2` edge with all available arguments
+* Must use `portfolioV2` edge with exactly one address in the `addresses` argument
 * Must use `tokenBalances` edge
-* Must use `byAccount` edge
-* Must use `tokenBalances` edge
-* Must paginate both `byAccount` and `tokenBalances` edges
-* Must return all available fields from mentioned edges
+* Must use `byToken` edge
+* Must set `filters.includeTokensWithMissingPrices` to `true`
+* Must paginate the `byToken` edge
+* Must return the token balance fields needed to stream complete token balance pages
 
 ### Command
 
@@ -693,7 +693,8 @@ A Rust struct that represents a CLI command.
   * `addresses: Vec<String>`
 * Must have methods:
   * `run`
-    * Must send requests for [`PortfolioV2TokenBalancesByAccount` query](#portfoliov2tokenbalancesbyaccount-query)
+    * Must iterate over `addresses` and send requests for [`PortfolioV2TokenBalancesByToken` query](#portfoliov2tokenbalancesbytoken-query), passing exactly one address per request
+    * Must paginate all token balances for each address
     * Must stream the results to `stdout` as soon as they are available
 
 ## Error handling
@@ -2061,15 +2062,15 @@ pub use command::*;
 mod key;
 pub use key::*;
 
-pub mod portfolio_v2_query;
-pub use portfolio_v2_query::portfolio_v2_query as portfolio_v2_query_types;
-pub use portfolio_v2_query::*;
+pub mod portfolio_v2_token_balances_by_token;
+pub use portfolio_v2_token_balances_by_token::portfolio_v2_token_balances_by_token as portfolio_v2_token_balances_by_token_types;
+pub use portfolio_v2_token_balances_by_token::*;
 
 mod portfolio_page_size;
 pub use portfolio_page_size::*;
 
-mod portfolio_v2_request;
-pub use portfolio_v2_request::*;
+mod portfolio_v2_token_balances_by_token_request;
+pub use portfolio_v2_token_balances_by_token_request::*;
 
 mod rate_limits;
 pub use rate_limits::*;

@@ -41,7 +41,7 @@ pub enum CommandRunError {
     #[error("failed to construct Zapper client")]
     ClientNewFailed { source: ClientNewError },
     #[error("failed to run portfolio command")]
-    PortfolioCommandRunFailed { source: PortfolioCommandRunError },
+    PortfolioCommandRunFailed { source: Box<PortfolioCommandRunError> },
 }
 
 mod portfolio_command;

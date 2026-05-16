@@ -1,4 +1,4 @@
-use crate::{Address, ChainId, Client, ClientPortfolioV2Error, ConvertStringToAddressError, PortfolioPageSize, PortfolioV2Request, PortfolioV2RequestNewError, PortfolioV2RequestSetAfterStringError};
+use crate::{Address, ChainId, Client, ClientPortfolioV2TokenBalancesByTokenError, ConvertStringToAddressError, PortfolioPageSize, PortfolioV2TokenBalancesByTokenRequest, PortfolioV2TokenBalancesByTokenRequestSetAfterStringError};
 use clap::Parser;
 use errgonomic::{ErrVec, handle, handle_iter, handle_opt};
 use serde::Serialize;
@@ -25,28 +25,34 @@ impl PortfolioCommand {
             first,
         } = self;
         let addresses = handle!(parse_addresses(addresses), ParseAddressesFailed);
-        let mut request = handle!(PortfolioV2Request::new(addresses, chain_ids, first), PortfolioV2RequestNewFailed);
         let mut stdout = BufWriter::new(stdout().lock());
-        loop {
-            let page_request = request.clone();
-            let data = handle!(client.portfolio_v2(page_request).await, PortfolioV2Failed);
-            let token_balances = data.portfolio_v2.token_balances;
-            let by_token = token_balances.by_token;
-            handle!(
-                by_token
-                    .edges
-                    .iter()
-                    .map(|edge| &edge.node)
-                    .try_for_each(|token_balance| write_json_line(&mut stdout, token_balance)),
-                WriteJsonLineFailed
-            );
-            handle!(stdout.flush(), FlushStdoutFailed);
-            let page_info = by_token.page_info;
-            if page_info.has_next_page {
-                let after = handle_opt!(page_info.end_cursor, PageEndCursorNotFound, request);
-                handle!(request.set_after_string(after), PortfolioV2RequestSetAfterStringFailed);
-            } else {
-                break;
+        for address in addresses {
+            let mut request = PortfolioV2TokenBalancesByTokenRequest::new(address, chain_ids.clone(), first);
+            loop {
+                let page_request = request.clone();
+                let data = handle!(
+                    client
+                        .portfolio_v2_token_balances_by_token(page_request)
+                        .await,
+                    PortfolioV2TokenBalancesByTokenFailed
+                );
+                let token_balances = data.portfolio_v2.token_balances;
+                let total_balance_usd = token_balances.total_balance_usd;
+                let by_token = token_balances.by_token;
+                let page_info = by_token.page_info.clone();
+                let page = PortfolioAddressTokenBalancesPage {
+                    address: &request.address,
+                    total_balance_usd,
+                    token_balances: &by_token,
+                };
+                handle!(write_json_line(&mut stdout, &page), WriteJsonLineFailed);
+                handle!(stdout.flush(), FlushStdoutFailed);
+                if page_info.has_next_page {
+                    let after = handle_opt!(page_info.end_cursor, TokenPageEndCursorNotFound, request);
+                    handle!(request.set_after_string(after), PortfolioV2TokenBalancesByTokenRequestSetAfterStringFailed);
+                } else {
+                    break;
+                }
             }
         }
         Ok(ExitCode::SUCCESS)
@@ -57,16 +63,14 @@ impl PortfolioCommand {
 pub enum PortfolioCommandRunError {
     #[error("failed to parse portfolio addresses")]
     ParseAddressesFailed { source: ParseAddressesError },
-    #[error("failed to construct portfolioV2 request")]
-    PortfolioV2RequestNewFailed { source: PortfolioV2RequestNewError },
-    #[error("failed to query portfolioV2")]
-    PortfolioV2Failed { source: ClientPortfolioV2Error },
-    #[error("failed to set portfolioV2 page cursor")]
-    PortfolioV2RequestSetAfterStringFailed { source: PortfolioV2RequestSetAfterStringError },
-    #[error("failed to write token balance")]
+    #[error("failed to query portfolioV2 token balances by token")]
+    PortfolioV2TokenBalancesByTokenFailed { source: ClientPortfolioV2TokenBalancesByTokenError },
+    #[error("failed to set portfolioV2 token page cursor")]
+    PortfolioV2TokenBalancesByTokenRequestSetAfterStringFailed { source: PortfolioV2TokenBalancesByTokenRequestSetAfterStringError },
+    #[error("failed to write portfolio address token page")]
     WriteJsonLineFailed { source: WriteJsonLineError },
-    #[error("portfolioV2 page info did not contain an end cursor")]
-    PageEndCursorNotFound { request: PortfolioV2Request },
+    #[error("portfolioV2 token page info did not contain an end cursor")]
+    TokenPageEndCursorNotFound { request: PortfolioV2TokenBalancesByTokenRequest },
     #[error("failed to flush stdout")]
     FlushStdoutFailed { source: std::io::Error },
 }
@@ -97,3 +101,7 @@ pub enum WriteJsonLineError {
     #[error("failed to write newline to stdout")]
     WriteNewlineFailed { source: std::io::Error },
 }
+
+mod portfolio_address_token_balances_page;
+
+pub use portfolio_address_token_balances_page::*;

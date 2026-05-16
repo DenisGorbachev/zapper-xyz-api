@@ -17,15 +17,15 @@ pub use command::*;
 mod key;
 pub use key::*;
 
-pub mod portfolio_v2_query;
-pub use portfolio_v2_query::portfolio_v2_query as portfolio_v2_query_types;
-pub use portfolio_v2_query::*;
+pub mod portfolio_v2_token_balances_by_token;
+pub use portfolio_v2_token_balances_by_token::portfolio_v2_token_balances_by_token as portfolio_v2_token_balances_by_token_types;
+pub use portfolio_v2_token_balances_by_token::*;
 
 mod portfolio_page_size;
 pub use portfolio_page_size::*;
 
-mod portfolio_v2_request;
-pub use portfolio_v2_request::*;
+mod portfolio_v2_token_balances_by_token_request;
+pub use portfolio_v2_token_balances_by_token_request::*;
 
 mod rate_limits;
 pub use rate_limits::*;

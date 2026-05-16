@@ -3,9 +3,6 @@ use serde::{Deserialize, Serialize};
 use std::ops::Not;
 use thiserror::Error;
 
-const ADDRESS_PREFIX: &str = "0x";
-const ADDRESS_LENGTH: usize = 42;
-
 #[derive(Serialize, Deserialize, Eq, PartialEq, Hash, Clone, Debug)]
 #[serde(try_from = "String", into = "String")]
 pub struct Address(String);
@@ -21,8 +18,8 @@ impl TryFrom<String> for Address {
 
     fn try_from(value: String) -> Result<Self, Self::Error> {
         use ConvertStringToAddressError::*;
-        let body = handle_opt!(value.strip_prefix(ADDRESS_PREFIX), PrefixInvalid, value);
-        handle_bool!(value.len() != ADDRESS_LENGTH, LengthInvalid, value);
+        let body = handle_opt!(value.strip_prefix("0x"), PrefixInvalid, value);
+        handle_bool!(value.len() != 42, LengthInvalid, value);
         handle_bool!(
             body.chars()
                 .all(|character| character.is_ascii_hexdigit())

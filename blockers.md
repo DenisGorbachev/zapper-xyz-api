@@ -1,3 +1,0 @@
-- B003: Live CLI balance verification against Zapper could not be completed because TCP connections to `https://public.zapper.xyz/graphql` time out from this environment, even when `ZAPPER_API_KEY` is provided through `fnox exec --profile "test"`. Workarounds:
-  - Run the CLI from a network environment that can reach `public.zapper.xyz`.
-  - Add an integration-test seam that points `Client` at a local mock GraphQL server for non-network verification.
