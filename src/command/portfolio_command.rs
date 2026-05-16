@@ -35,17 +35,14 @@ impl PortfolioCommand {
                         .await,
                     PortfolioV2TokenBalancesByTokenFailed
                 );
-                let token_balances = data.portfolio_v2.token_balances;
-                let total_balance_usd = token_balances.total_balance_usd;
-                let by_token = token_balances.by_token;
-                let page_info = by_token.page_info.clone();
+                let by_token = data.portfolio_v2.token_balances.by_token;
                 let page = PortfolioAddressTokenBalancesPage {
                     address: &request.address,
-                    total_balance_usd,
-                    token_balances: &by_token,
+                    data: &by_token,
                 };
                 handle!(write_json_line(&mut stdout, &page), WriteJsonLineFailed);
                 handle!(stdout.flush(), FlushStdoutFailed);
+                let page_info = by_token.page_info;
                 if page_info.has_next_page {
                     let after = handle_opt!(page_info.end_cursor, TokenPageEndCursorNotFound, request);
                     handle!(request.set_after_string(after), PortfolioV2TokenBalancesByTokenRequestSetAfterStringFailed);

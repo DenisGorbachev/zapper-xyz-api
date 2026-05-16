@@ -6,7 +6,7 @@ query PortfolioV2TokenBalancesByToken(
 ) {
   portfolioV2(addresses: $addresses, chainIds: $chainIds) {
     tokenBalances {
-      totalBalanceUSD
+      # totalBalanceUSD
       byToken(first: $first, after: $after, filters: { includeTokensWithMissingPrices: true }) {
         totalCount
         edges {
@@ -14,24 +14,24 @@ query PortfolioV2TokenBalancesByToken(
           node {
             id
             tokenAddress
-            networkId
+            # networkId
             name
             symbol
-            decimals
+            # decimals
             verified
             price
             balance
             balanceUSD
-            balanceRaw
-            imgUrl
-            imgUrlV2
-            isFavorite
-            balanceInCurrency
+            # balanceRaw
+            # imgUrl
+            # imgUrlV2
+            # isFavorite
+            # balanceInCurrency
             network {
-              id
+              # id
               name
-              slug
-              chainId
+              # slug
+              # chainId
             }
           }
         }

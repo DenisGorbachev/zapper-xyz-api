@@ -5,6 +5,5 @@ use serde::Serialize;
 #[serde(rename_all = "camelCase")]
 pub struct PortfolioAddressTokenBalancesPage<'a, T: Serialize> {
     pub address: &'a Address,
-    pub total_balance_usd: f64,
-    pub token_balances: &'a T,
+    pub data: &'a T,
 }
