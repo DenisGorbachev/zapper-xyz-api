@@ -1,6 +1,6 @@
-use crate::{Address, ChainId, Client, ClientPortfolioV2TokenBalancesByTokenError, ConvertStringToAddressError, PortfolioPageSize, PortfolioV2TokenBalancesByTokenRequest, PortfolioV2TokenBalancesByTokenRequestSetAfterStringError};
+use crate::{Address, ChainId, Client, ClientPortfolioV2TokenBalancesByTokenError, PageSize, PortfolioV2TokenBalancesByTokenRequest, PortfolioV2TokenBalancesByTokenRequestSetAfterStringError};
 use clap::Parser;
-use errgonomic::{ErrVec, handle, handle_iter, handle_opt};
+use errgonomic::{handle, handle_opt};
 use serde::Serialize;
 use std::io::{BufWriter, Write, stdout};
 use std::process::ExitCode;
@@ -9,11 +9,11 @@ use thiserror::Error;
 #[derive(Parser, Clone, Debug)]
 pub struct PortfolioCommand {
     #[arg(num_args = 1.., required = true)]
-    pub addresses: Vec<String>,
+    pub addresses: Vec<Address>,
     #[arg(long = "chain-id")]
     pub chain_ids: Vec<ChainId>,
-    #[arg(long, default_value_t = PortfolioPageSize::default())]
-    pub first: PortfolioPageSize,
+    #[arg(long, default_value_t = PageSize::default())]
+    pub first: PageSize,
 }
 
 impl PortfolioCommand {
@@ -24,7 +24,6 @@ impl PortfolioCommand {
             chain_ids,
             first,
         } = self;
-        let addresses = handle!(parse_addresses(addresses), ParseAddressesFailed);
         let mut stdout = BufWriter::new(stdout().lock());
         for address in addresses {
             let mut request = PortfolioV2TokenBalancesByTokenRequest::new(address, chain_ids.clone(), first);
@@ -61,8 +60,6 @@ impl PortfolioCommand {
 
 #[derive(Error, Debug)]
 pub enum PortfolioCommandRunError {
-    #[error("failed to parse portfolio addresses")]
-    ParseAddressesFailed { source: ParseAddressesError },
     #[error("failed to query portfolioV2 token balances by token")]
     PortfolioV2TokenBalancesByTokenFailed { source: ClientPortfolioV2TokenBalancesByTokenError },
     #[error("failed to set portfolioV2 token page cursor")]
@@ -73,18 +70,6 @@ pub enum PortfolioCommandRunError {
     TokenPageEndCursorNotFound { request: PortfolioV2TokenBalancesByTokenRequest },
     #[error("failed to flush stdout")]
     FlushStdoutFailed { source: std::io::Error },
-}
-
-pub fn parse_addresses(addresses: Vec<String>) -> Result<Vec<Address>, ParseAddressesError> {
-    use ParseAddressesError::*;
-    let addresses = addresses.into_iter().map(Address::try_from);
-    Ok(handle_iter!(addresses, ConvertStringsToAddressesFailed))
-}
-
-#[derive(Error, Debug)]
-pub enum ParseAddressesError {
-    #[error("failed to convert {len} strings to addresses", len = source.len())]
-    ConvertStringsToAddressesFailed { source: ErrVec<ConvertStringToAddressError> },
 }
 
 pub fn write_json_line(writer: &mut impl Write, value: &impl Serialize) -> Result<(), WriteJsonLineError> {

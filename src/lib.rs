@@ -21,8 +21,8 @@ pub mod portfolio_v2_token_balances_by_token;
 pub use portfolio_v2_token_balances_by_token::portfolio_v2_token_balances_by_token as portfolio_v2_token_balances_by_token_types;
 pub use portfolio_v2_token_balances_by_token::*;
 
-mod portfolio_page_size;
-pub use portfolio_page_size::*;
+mod page_size;
+pub use page_size::*;
 
 mod portfolio_v2_token_balances_by_token_request;
 pub use portfolio_v2_token_balances_by_token_request::*;

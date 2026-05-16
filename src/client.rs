@@ -1,5 +1,5 @@
 use crate::portfolio_v2_token_balances_by_token_types::ResponseData;
-use crate::{Key, PortfolioV2TokenBalancesByToken, PortfolioV2TokenBalancesByTokenRequest, PortfolioV2TokenBalancesByTokenRequestVariablesError, RateLimits};
+use crate::{Key, PortfolioV2TokenBalancesByToken, PortfolioV2TokenBalancesByTokenRequest, RateLimits};
 use errgonomic::{handle, handle_opt, handle_opt_take};
 use graphql_client::{GraphQLQuery, Response};
 use reqwest::Client as HttpClient;
@@ -39,7 +39,7 @@ impl Client {
             .until_ready()
             .await;
         let base = self.base.clone();
-        let variables = handle!(request.variables(), VariablesFailed, request, base);
+        let variables = request.variables();
         let body = PortfolioV2TokenBalancesByToken::build_query(variables);
         let request_builder = self.inner.post(base.clone()).json(&body);
         let response = handle!(request_builder.send().await, SendRequestFailed, request, base);
@@ -121,8 +121,6 @@ impl From<(HttpClient, Url, RateLimits)> for Client {
 
 #[derive(Error, Debug)]
 pub enum ClientPortfolioV2TokenBalancesByTokenError {
-    #[error("failed to convert portfolioV2 request to GraphQL variables")]
-    VariablesFailed { source: PortfolioV2TokenBalancesByTokenRequestVariablesError, request: PortfolioV2TokenBalancesByTokenRequest, base: Url },
     #[error("failed to send portfolioV2 request")]
     SendRequestFailed { source: reqwest::Error, request: PortfolioV2TokenBalancesByTokenRequest, base: Url },
     #[error("portfolioV2 response status is not successful")]

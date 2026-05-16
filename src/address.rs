@@ -1,6 +1,7 @@
-use errgonomic::{handle_bool, handle_opt};
+use errgonomic::{handle, handle_bool, handle_opt};
 use serde::{Deserialize, Serialize};
 use std::ops::Not;
+use std::str::FromStr;
 use thiserror::Error;
 
 #[derive(Serialize, Deserialize, Eq, PartialEq, Hash, Clone, Debug)]
@@ -29,6 +30,22 @@ impl TryFrom<String> for Address {
         );
         Ok(Self(value))
     }
+}
+
+impl FromStr for Address {
+    type Err = AddressFromStrError;
+
+    fn from_str(input: &str) -> Result<Self, Self::Err> {
+        use AddressFromStrError::*;
+        let value = handle!(Self::try_from(input.to_owned()), TryFromFailed, input: input.to_owned());
+        Ok(value)
+    }
+}
+
+#[derive(Error, Debug)]
+pub enum AddressFromStrError {
+    #[error("failed to parse address '{input}'")]
+    TryFromFailed { source: ConvertStringToAddressError, input: String },
 }
 
 #[derive(Error, Debug)]

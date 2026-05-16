@@ -1,4 +1,4 @@
-use crate::{Client, ClientNewError, Key, parse_key};
+use crate::{Client, ClientNewError, Key};
 use clap::Parser;
 use clap::Subcommand as ClapSubcommand;
 use errgonomic::handle;
@@ -10,7 +10,7 @@ use Subcommand::*;
 #[derive(Parser, Debug)]
 #[command(author, version, about, propagate_version = true)]
 pub struct Command {
-    #[arg(long, env = "ZAPPER_API_KEY", hide_env_values = true, value_parser = parse_key)]
+    #[arg(long, env = "ZAPPER_API_KEY", hide_env_values = true)]
     pub key: Key,
     #[command(subcommand)]
     pub subcommand: Subcommand,
@@ -18,7 +18,7 @@ pub struct Command {
 
 #[derive(ClapSubcommand, Clone, Debug)]
 pub enum Subcommand {
-    Portfolio(portfolio_command::PortfolioCommand),
+    Portfolio(PortfolioCommand),
 }
 
 impl Command {

@@ -1960,7 +1960,7 @@ cfg_if::cfg_if! {
 name = "zapper-xyz-api"
 version = "0.1.0"
 edition = "2024"
-rust-version = "1.85.0"
+rust-version = "1.93.0"
 description = "API client for zapper.xyz"
 license = "Apache-2.0 OR MIT"
 homepage = "https://github.com/DenisGorbachev/zapper-xyz-api"
@@ -1993,6 +1993,7 @@ announcement = ""
 readme = { generate = true }
 
 [dependencies]
+derive-new = "0.7"
 graphql_client = { version = "0.16", features = ["graphql_query_derive"] }
 errgonomic = "0.5"
 governor = "0.10"
@@ -2006,6 +2007,7 @@ url = "2"
 url-macro = "0.2"
 clap = { version = "4", features = ["derive", "env"] }
 tokio = { version = "1", features = ["rt", "rt-multi-thread", "macros", "fs", "net"] }
+non-empty-str = { version = "0.11", features = ["serde"] }
 
 #derive-getters = { version = "0.5.0", features = ["auto_copy_getters"] }
 #derive-new = "0.7.0"
@@ -2066,8 +2068,8 @@ pub mod portfolio_v2_token_balances_by_token;
 pub use portfolio_v2_token_balances_by_token::portfolio_v2_token_balances_by_token as portfolio_v2_token_balances_by_token_types;
 pub use portfolio_v2_token_balances_by_token::*;
 
-mod portfolio_page_size;
-pub use portfolio_page_size::*;
+mod page_size;
+pub use page_size::*;
 
 mod portfolio_v2_token_balances_by_token_request;
 pub use portfolio_v2_token_balances_by_token_request::*;

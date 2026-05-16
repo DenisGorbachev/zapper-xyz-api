@@ -252,6 +252,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "derive-new"
+version = "0.7.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2cdc8d50f426189eef89dac62fabfa0abb27d5cc008f25bf4156a0203325becc"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
 name = "displaydoc"
 version = "0.2.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -950,6 +961,48 @@ dependencies = [
 ]
 
 [[package]]
+name = "non-empty-iter"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "537de765a54a1fd71965dd9304e4bf3a599a1a1a98dd0aa5c3988e81da964626"
+dependencies = [
+ "non-zero-size",
+]
+
+[[package]]
+name = "non-empty-slice"
+version = "0.5.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0bef315dd331f323b2e7e2518cdf8768aad045438e90a27e5b72c189dc28add6"
+dependencies = [
+ "non-empty-iter",
+ "non-zero-size",
+ "ownership",
+ "serde",
+ "thiserror 2.0.18",
+]
+
+[[package]]
+name = "non-empty-str"
+version = "0.11.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f9361ab184b964cae74c4282c6c76524c01206b45722fc24b8a3220a3df1496d"
+dependencies = [
+ "non-empty-iter",
+ "non-empty-slice",
+ "non-zero-size",
+ "ownership",
+ "serde",
+ "thiserror 2.0.18",
+]
+
+[[package]]
+name = "non-zero-size"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1796c2586c7347347506b2bc36ddd1265def6cf97fa0858d2a4cb4302ec5eb28"
+
+[[package]]
 name = "nonzero_ext"
 version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -972,6 +1025,12 @@ name = "openssl-probe"
 version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7c87def4c32ab89d880effc9e097653c8da5d6ef28e6b539d313baaacfbafcbe"
+
+[[package]]
+name = "ownership"
+version = "0.2.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "72233826974c6a749a480cd447313365c1081244b9681b8b1462a974741c28af"
 
 [[package]]
 name = "parking_lot"
@@ -2369,9 +2428,11 @@ name = "zapper-xyz-api"
 version = "0.1.0"
 dependencies = [
  "clap",
+ "derive-new",
  "errgonomic",
  "governor",
  "graphql_client",
+ "non-empty-str",
  "reqwest",
  "secrecy",
  "serde",
