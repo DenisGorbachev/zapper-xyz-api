@@ -14,24 +14,24 @@ query PortfolioV2TokenBalancesByToken(
           node {
             id
             tokenAddress
-            # networkId
+            networkId
             name
             symbol
-            # decimals
+            decimals
             verified
             price
             balance
             balanceUSD
-            # balanceRaw
+            balanceRaw
             # imgUrl
             # imgUrlV2
             # isFavorite
             # balanceInCurrency
             network {
-              # id
+              id
               name
               # slug
-              # chainId
+              chainId
             }
           }
         }
