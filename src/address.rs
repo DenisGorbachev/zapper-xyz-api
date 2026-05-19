@@ -1,34 +1,23 @@
-use errgonomic::{handle, handle_bool, handle_opt};
+use derive_more::{AsRef, Display, From, Into};
+use errgonomic::handle;
+use non_empty_str::{EmptyString, NonEmptyString};
 use serde::{Deserialize, Serialize};
-use std::ops::Not;
 use std::str::FromStr;
 use thiserror::Error;
 
-#[derive(Serialize, Deserialize, Eq, PartialEq, Hash, Clone, Debug)]
-#[serde(try_from = "String", into = "String")]
-pub struct Address(String);
-
-impl From<Address> for String {
-    fn from(value: Address) -> Self {
-        value.0
-    }
-}
+#[derive(AsRef, Display, From, Into, Serialize, Deserialize, Eq, PartialEq, Hash, Clone, Debug)]
+#[as_ref(NonEmptyString, str)]
+#[into(NonEmptyString, String)]
+#[serde(transparent)]
+pub struct Address(NonEmptyString);
 
 impl TryFrom<String> for Address {
     type Error = ConvertStringToAddressError;
 
     fn try_from(value: String) -> Result<Self, Self::Error> {
         use ConvertStringToAddressError::*;
-        let body = handle_opt!(value.strip_prefix("0x"), PrefixInvalid, value);
-        handle_bool!(value.len() != 42, LengthInvalid, value);
-        handle_bool!(
-            body.chars()
-                .all(|character| character.is_ascii_hexdigit())
-                .not(),
-            CharactersInvalid,
-            value
-        );
-        Ok(Self(value))
+        let value = handle!(NonEmptyString::try_from(value), NonEmptyStringTryFromFailed);
+        Ok(Self::from(value))
     }
 }
 
@@ -50,10 +39,6 @@ pub enum AddressFromStrError {
 
 #[derive(Error, Debug)]
 pub enum ConvertStringToAddressError {
-    #[error("address must start with '0x'")]
-    PrefixInvalid { value: String },
-    #[error("address must contain 42 characters")]
-    LengthInvalid { value: String },
-    #[error("address must contain only hexadecimal characters after '0x'")]
-    CharactersInvalid { value: String },
+    #[error("failed to construct non-empty Zapper address")]
+    NonEmptyStringTryFromFailed { source: EmptyString },
 }

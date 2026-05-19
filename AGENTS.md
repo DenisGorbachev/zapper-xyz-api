@@ -2008,6 +2008,7 @@ url-macro = "0.2"
 clap = { version = "4", features = ["derive", "env"] }
 tokio = { version = "1", features = ["rt", "rt-multi-thread", "macros", "fs", "net"] }
 non-empty-str = { version = "0.11", features = ["serde"] }
+derive_more = { version = "2", default-features = false, features = ["as_ref", "display", "from", "into"] }
 
 #derive-getters = { version = "0.5.0", features = ["auto_copy_getters"] }
 #derive-new = "0.7.0"
