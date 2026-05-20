@@ -6,7 +6,7 @@ use std::str::FromStr;
 use thiserror::Error;
 
 #[derive(AsRef, Display, From, Into, Serialize, Deserialize, Eq, PartialEq, Hash, Clone, Debug)]
-#[as_ref(NonEmptyString, str)]
+#[as_ref(NonEmptyString, String, str)]
 #[into(NonEmptyString, String)]
 #[serde(transparent)]
 pub struct Address(NonEmptyString);
