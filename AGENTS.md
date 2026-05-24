@@ -50,6 +50,7 @@ Notes:
 
 * After finishing the task: run `mise run agent:on:stop` (this command runs the lints and tests)
   * `mise run agent:on:stop` may modify `README.md`, `AGENTS.md`, `Cargo.toml` (this is normal, don't mention it)
+  * `mise run agent:on:stop` includes `cargo fmt`, `cargo check`, `cargo clippy`, `cargo nextest` (no need to run them separately)
 * Don't edit the files in the following top-level dirs: `specs`, `.agents`
 * Don't write the tests unless I ask you explicitly
 * If a later instruction overrides the former instruction: follow the later instruction (last override wins).
@@ -405,15 +406,24 @@ A function marked with `#[test]` or `#[tokio::test]`.
 
 * Must return a `Result`
 * Must implement proper error handling via `errgonomic` crate
+* Should use macros from `assertables` crate
+  * Should use `assert_infix` instead of `assert_gt`, `assert_ge`, `assert_lt`, `assert_le`, `assert_eq`
 
 ### Macros
 
 * Write `macro_rules!` macros to reduce boilerplate
 * If you see similar code in different places, write a macro and replace the similar code with a macro call
 
+### Shell
+
+* For shell scripts and commands that will be read by the user (written per direct request of the user):
+  * Use long options
+* For shell scripts and commands what won't be read by the user (written to accomplish a local task):
+  * Use short options
+
 ### Cargo.toml
 
-* Don't define package features contain only a single optional dependency (such features are already defined by cargo automatically)
+* Don't define package features with only a single optional dependency (such features are already defined by cargo automatically)
 
 ### Sandbox
 
@@ -1973,11 +1983,14 @@ exclude = [
     "*.local.*",
     "doc/dev",
     "specs",
+    "AGENTS.ts",
     "README.ts",
     "AGENTS*.md",
     "CLAUDE*.md",
+    "deno.lock",
     "deno.json",
     "commitlint.config.mjs",
+    "fnox.toml",
     "lefthook.yml",
     "mise.toml",
     "rumdl.toml",
@@ -2019,6 +2032,24 @@ derive_more = { version = "2", default-features = false, features = ["as_ref", "
 #strum = { version = "0.27.2", features = ["derive"] }
 #stub-macro = { version = "0.2.1" }
 #subtype = { git = "https://github.com/DenisGorbachev/subtype" }
+```
+
+### fnox.toml
+
+```toml
+#:schema https://fnox.jdx.dev/schema.json
+
+if_missing = "error"
+
+[providers]
+keychain = { type = "keychain", service = "zapper-xyz-api" }
+pass = { type = "password-store", prefix = "zapper-xyz-api/" }
+
+[profiles.test.secrets]
+ZAPPER_API_KEY= { provider = "pass", value = "TEST_ZAPPER_API_KEY" }
+
+[profiles.prod.secrets]
+ZAPPER_API_KEY = { provider = "keychain", value = "PROD_ZAPPER_API_KEY" }
 ```
 
 ### src/main.rs
