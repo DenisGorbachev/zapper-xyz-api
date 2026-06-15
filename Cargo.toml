@@ -39,6 +39,7 @@ readme = { generate = true }
 
 [dependencies]
 derive-new = "0.7"
+derive_setters = "0.1.9"
 graphql_client = { version = "0.16", features = ["graphql_query_derive"] }
 errgonomic = "0.5"
 governor = "0.10"

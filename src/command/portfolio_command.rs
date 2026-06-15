@@ -1,8 +1,9 @@
-use crate::{Address, ChainId, Client, ClientPortfolioV2TokenBalancesByTokenError, PageSize, PortfolioV2TokenBalancesByTokenRequest, PortfolioV2TokenBalancesByTokenRequestSetAfterStringError};
+use crate::{Address, ChainId, Client, ClientPortfolioV2TokenBalancesByTokenError, PageSize, PortfolioV2TokenBalancesByTokenRequest};
 use clap::Parser;
 use errgonomic::{handle, handle_opt};
 use serde::Serialize;
 use std::io::{BufWriter, Write, stdout};
+use std::ops::Not;
 use std::process::ExitCode;
 use thiserror::Error;
 
@@ -25,6 +26,7 @@ impl PortfolioCommand {
             first,
         } = self;
         let mut stdout = BufWriter::new(stdout().lock());
+        let chain_ids = chain_ids.is_empty().not().then_some(chain_ids);
         for address in addresses {
             let mut request = PortfolioV2TokenBalancesByTokenRequest::new(address, chain_ids.clone(), first);
             loop {
@@ -45,7 +47,7 @@ impl PortfolioCommand {
                 let page_info = by_token.page_info;
                 if page_info.has_next_page {
                     let after = handle_opt!(page_info.end_cursor, TokenPageEndCursorNotFound, request);
-                    handle!(request.set_after_string(after), PortfolioV2TokenBalancesByTokenRequestSetAfterStringFailed);
+                    request.set_after(after);
                 } else {
                     break;
                 }
@@ -59,8 +61,6 @@ impl PortfolioCommand {
 pub enum PortfolioCommandRunError {
     #[error("failed to query portfolioV2 token balances by token")]
     PortfolioV2TokenBalancesByTokenFailed { source: ClientPortfolioV2TokenBalancesByTokenError },
-    #[error("failed to set portfolioV2 token page cursor")]
-    PortfolioV2TokenBalancesByTokenRequestSetAfterStringFailed { source: PortfolioV2TokenBalancesByTokenRequestSetAfterStringError },
     #[error("failed to write portfolio address token page")]
     WriteJsonLineFailed { source: WriteJsonLineError },
     #[error("portfolioV2 token page info did not contain an end cursor")]

@@ -38,6 +38,7 @@ Requirements:
 - Must implement rate limiting for queries
 - Must define Rust types for the following GraphQL scalar types from `schema.graphql`:
   - `Address`
+  - `ChainId`
 
 ## `zapper-xyz-api` bin crate
 

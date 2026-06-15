@@ -458,6 +458,8 @@ You are running in a sandbox with limited network access.
 
 ## Guidelines for `serde`
 
+### Requirements
+
 * Every input data type must derive `Serialize` and `Deserialize`
 * Every `Option`-wrapped field must have attributes:
   * `#[serde(skip_serializing_if = "Option::is_none")]`
@@ -469,6 +471,18 @@ You are running in a sandbox with limited network access.
   * `value` must be a primitive type
   * `unit` must be a string that contains the unit name in singular form (for example: "nanosecond", "second", "minute", "kilogram", "meter")
     * `unit` may contain a prefix (for example: "nano", "kilo")
+
+### Notes
+
+* It is recommended to use `serde_with` to reduce the code size by avoiding custom `Serialize`/`Deserialize` impls
+
+## Guidelines for `clap`
+
+### Requirements
+
+* For each enum in project:
+  * If enum has only unit variants and doesn't implement `Error`
+    * Then: it must derive `ValueEnum` with `#[value(rename_all = "kebab-case")]`
 
 ## CLI guidelines
 
@@ -639,6 +653,7 @@ Requirements:
 * Must implement rate limiting for queries
 * Must define Rust types for the following GraphQL scalar types from `schema.graphql`:
   * `Address`
+  * `ChainId`
 
 ### `zapper-xyz-api` bin crate
 
@@ -2030,6 +2045,7 @@ readme = { generate = true }
 
 [dependencies]
 derive-new = "0.7"
+derive_setters = "0.1.9"
 graphql_client = { version = "0.16", features = ["graphql_query_derive"] }
 errgonomic = "0.5"
 governor = "0.10"
