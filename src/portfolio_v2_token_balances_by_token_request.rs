@@ -16,16 +16,19 @@ pub struct PortfolioV2TokenBalancesByTokenRequest {
     pub after: Option<String>,
 }
 
-impl PortfolioV2TokenBalancesByTokenRequest {
-    pub fn variables(&self) -> Variables {
-        Variables {
-            addresses: vec![self.address.clone()],
-            chain_ids: self
-                .chain_ids
-                .as_ref()
-                .map(|chain_ids| chain_ids.iter().copied().map(ChainId::get).collect()),
-            first: i64::from(self.first),
-            after: self.after.clone(),
+impl From<PortfolioV2TokenBalancesByTokenRequest> for Variables {
+    fn from(request: PortfolioV2TokenBalancesByTokenRequest) -> Self {
+        let PortfolioV2TokenBalancesByTokenRequest {
+            address,
+            chain_ids,
+            first,
+            after,
+        } = request;
+        Self {
+            addresses: vec![address],
+            chain_ids: chain_ids.map(|chain_ids| chain_ids.into_iter().map(ChainId::get).collect()),
+            first: i64::from(first),
+            after,
         }
     }
 }
