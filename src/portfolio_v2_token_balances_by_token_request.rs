@@ -1,5 +1,5 @@
 use crate::portfolio_v2_token_balances_by_token_types::Variables;
-use crate::{Address, ChainId, PageSize};
+use crate::{Address, ChainId, CursorPaginatedRequest, PageSize};
 use derive_new::new;
 use derive_setters::Setters;
 use serde::{Deserialize, Serialize};
@@ -30,5 +30,11 @@ impl From<PortfolioV2TokenBalancesByTokenRequest> for Variables {
             first: i64::from(first),
             after,
         }
+    }
+}
+
+impl CursorPaginatedRequest for PortfolioV2TokenBalancesByTokenRequest {
+    fn set_cursor_after(&mut self, after: String) {
+        self.set_after(after);
     }
 }

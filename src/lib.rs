@@ -29,3 +29,6 @@ pub use portfolio_v2_token_balances_by_token_request::*;
 
 mod rate_limits;
 pub use rate_limits::*;
+
+mod functions;
+pub use functions::*;

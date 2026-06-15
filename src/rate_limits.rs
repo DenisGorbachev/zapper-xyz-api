@@ -1,29 +1,29 @@
 use core::num::NonZeroU32;
 use governor::{DefaultDirectRateLimiter, Quota, RateLimiter};
-use std::cell::LazyCell;
+use std::sync::LazyLock;
 use std::time::Duration;
 
 #[derive(Debug)]
 pub struct RateLimits {
-    pub tokens: LazyCell<DefaultDirectRateLimiter>,
-    pub nft_metadata: LazyCell<DefaultDirectRateLimiter>,
-    pub search: LazyCell<DefaultDirectRateLimiter>,
-    pub portfolio_balances: LazyCell<DefaultDirectRateLimiter>,
-    pub transaction_history: LazyCell<DefaultDirectRateLimiter>,
-    pub rankings: LazyCell<DefaultDirectRateLimiter>,
-    pub other: LazyCell<DefaultDirectRateLimiter>,
+    pub tokens: LazyLock<DefaultDirectRateLimiter>,
+    pub nft_metadata: LazyLock<DefaultDirectRateLimiter>,
+    pub search: LazyLock<DefaultDirectRateLimiter>,
+    pub portfolio_balances: LazyLock<DefaultDirectRateLimiter>,
+    pub transaction_history: LazyLock<DefaultDirectRateLimiter>,
+    pub rankings: LazyLock<DefaultDirectRateLimiter>,
+    pub other: LazyLock<DefaultDirectRateLimiter>,
 }
 
 impl Default for RateLimits {
     fn default() -> Self {
         Self {
-            tokens: LazyCell::new(tokens_rate_limiter),
-            nft_metadata: LazyCell::new(nft_metadata_rate_limiter),
-            search: LazyCell::new(search_rate_limiter),
-            portfolio_balances: LazyCell::new(portfolio_balances_rate_limiter),
-            transaction_history: LazyCell::new(transaction_history_rate_limiter),
-            rankings: LazyCell::new(rankings_rate_limiter),
-            other: LazyCell::new(other_rate_limiter),
+            tokens: LazyLock::new(tokens_rate_limiter),
+            nft_metadata: LazyLock::new(nft_metadata_rate_limiter),
+            search: LazyLock::new(search_rate_limiter),
+            portfolio_balances: LazyLock::new(portfolio_balances_rate_limiter),
+            transaction_history: LazyLock::new(transaction_history_rate_limiter),
+            rankings: LazyLock::new(rankings_rate_limiter),
+            other: LazyLock::new(other_rate_limiter),
         }
     }
 }

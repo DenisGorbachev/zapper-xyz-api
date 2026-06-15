@@ -1,11 +1,12 @@
-use crate::portfolio_v2_token_balances_by_token_types::{ResponseData, Variables};
-use crate::{Key, PortfolioV2TokenBalancesByToken, PortfolioV2TokenBalancesByTokenRequest, RateLimits};
+use crate::portfolio_v2_token_balances_by_token_types::{PortfolioV2TokenBalancesByTokenPortfolioV2TokenBalancesByToken, ResponseData, Variables};
+use crate::{Key, PortfolioV2TokenBalancesByToken, PortfolioV2TokenBalancesByTokenRequest, RateLimits, TurnCursorPageError, turn_cursor_page};
 use errgonomic::{handle, handle_opt, handle_opt_take};
 use graphql_client::{GraphQLQuery, QueryBody, Response};
+use page_turner::{PageTurner, TurnedPageResult};
 use reqwest::Client as HttpClient;
 use reqwest::header::{HeaderMap, HeaderName, HeaderValue};
 use secrecy::ExposeSecret;
-use std::cell::LazyCell;
+use std::sync::LazyLock;
 use std::time::Duration;
 use thiserror::Error;
 use url::Url;
@@ -35,7 +36,7 @@ impl Client {
 
     pub async fn portfolio_v2_token_balances_by_token(&self, request: PortfolioV2TokenBalancesByTokenRequest) -> Result<ResponseData, ClientPortfolioV2TokenBalancesByTokenError> {
         use ClientPortfolioV2TokenBalancesByTokenError::*;
-        LazyCell::force(&self.limits.portfolio_balances)
+        LazyLock::force(&self.limits.portfolio_balances)
             .until_ready()
             .await;
         let body = PortfolioV2TokenBalancesByToken::build_query(request.into());
@@ -47,6 +48,33 @@ impl Client {
         let data = handle_opt!(response.data, ResponseDataNotFound, body);
         Ok(data)
     }
+}
+
+impl PageTurner<PortfolioV2TokenBalancesByTokenRequest> for Client {
+    type PageItems = PortfolioV2TokenBalancesByTokenPortfolioV2TokenBalancesByToken;
+    type PageError = PageTurnerPortfolioV2TokenBalancesByTokenRequestClientError;
+
+    async fn turn_page(&self, request: PortfolioV2TokenBalancesByTokenRequest) -> TurnedPageResult<Self, PortfolioV2TokenBalancesByTokenRequest> {
+        use PageTurnerPortfolioV2TokenBalancesByTokenRequestClientError::*;
+        let request_for_query = request.clone();
+        let data = handle!(
+            self.portfolio_v2_token_balances_by_token(request_for_query)
+                .await,
+            PortfolioV2TokenBalancesByTokenFailed,
+            request
+        );
+        let page = data.portfolio_v2.token_balances.by_token;
+        let turned_page = handle!(turn_cursor_page(request, page), TurnCursorPageFailed);
+        Ok(turned_page)
+    }
+}
+
+#[derive(Error, Debug)]
+pub enum PageTurnerPortfolioV2TokenBalancesByTokenRequestClientError {
+    #[error("failed to query portfolioV2 token balances by token page")]
+    PortfolioV2TokenBalancesByTokenFailed { source: ClientPortfolioV2TokenBalancesByTokenError, request: PortfolioV2TokenBalancesByTokenRequest },
+    #[error("failed to turn portfolioV2 token balances by token cursor page")]
+    TurnCursorPageFailed { source: TurnCursorPageError<PortfolioV2TokenBalancesByTokenRequest> },
 }
 
 #[derive(Error, Debug)]
