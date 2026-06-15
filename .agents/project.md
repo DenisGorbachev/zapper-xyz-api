@@ -47,6 +47,13 @@ A Rust crate that provides a CLI for zapper.xyz API.
 - Must contain [Command](#command)
 - Must contain [PortfolioCommand](#portfoliocommand)
 
+## src/lib.rs
+
+- Must have a crate-level doc comment:
+  ```text
+  Zapper API has a bug: it doesn't return the tokens with missing prices even with `includeTokensWithMissingPrices: true`. The final non-empty page’s cursor decodes to "ec6d06c9426495f2fffae17618ab5826:0". It is effectively <portfolio-id>:<balanceUSD>, so every zero-USD token shares the same cursor value. See also: "Zapper API totalCount investigation" thread.
+  ```
+
 ## Key
 
 A type alias for API key as `secrecy::SecretString`.
@@ -129,3 +136,9 @@ A Rust struct that represents a CLI command.
     - Must iterate over `addresses` and send requests for [`PortfolioV2TokenBalancesByToken` query](#portfoliov2tokenbalancesbytoken-query), passing exactly one address per request
     - Must paginate all token balances for each address
     - Must stream the results to `stdout` as soon as they are available
+
+## turn_cursor_page
+
+A Rust function that implements pagination for Zapper API.
+
+- Must stop if the new cursor is equal to the previous cursor (this is a bug in the API).
