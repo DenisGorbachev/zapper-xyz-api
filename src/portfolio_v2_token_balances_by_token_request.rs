@@ -34,6 +34,10 @@ impl From<PortfolioV2TokenBalancesByTokenRequest> for Variables {
 }
 
 impl CursorPaginatedRequest for PortfolioV2TokenBalancesByTokenRequest {
+    fn cursor_after(&self) -> Option<&str> {
+        self.after.as_deref()
+    }
+
     fn set_cursor_after(&mut self, after: String) {
         self.set_after(after);
     }

@@ -92,7 +92,7 @@ A Rust struct that has one field per limit in [rate limits](./docs/build.zapper.
 
 - Must have attributes:
   - `#[derive(Debug)]`
-- Every field must be a `LazyCell<DefaultDirectRateLimiter>` from `governor`
+- Every field must be a `LazyLock<DefaultDirectRateLimiter>` (`use governor::DefaultDirectRateLimiter`)
 - Must have an `impl Default`
   - Must construct rate limiters according to documentation
 

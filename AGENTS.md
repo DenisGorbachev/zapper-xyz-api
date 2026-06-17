@@ -707,7 +707,7 @@ A Rust struct that has one field per limit in [rate limits](./docs/build.zapper.
 
 * Must have attributes:
   * `#[derive(Debug)]`
-* Every field must be a `LazyCell<DefaultDirectRateLimiter>` from `governor`
+* Every field must be a `LazyLock<DefaultDirectRateLimiter>` (`use governor::DefaultDirectRateLimiter`)
 * Must have an `impl Default`
   * Must construct rate limiters according to documentation
 
@@ -2131,7 +2131,7 @@ fn verify_cli() {
 ### src/lib.rs
 
 ```rust
-//! This is a module-level comment for a Rust lib
+//! Zapper API has a bug: it doesn't return the tokens with missing prices even with `includeTokensWithMissingPrices: true`. The final non-empty page’s cursor decodes to "ec6d06c9426495f2fffae17618ab5826:0". It is effectively <portfolio-id>:<balanceUSD>, so every zero-USD token shares the same cursor value. See also: "Zapper API totalCount investigation" thread.
 
 #![deny(clippy::arithmetic_side_effects)]
 

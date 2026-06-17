@@ -8,7 +8,7 @@
 [![Documentation](https://docs.rs/zapper-xyz-api/badge.svg)](https://docs.rs/zapper-xyz-api)
 
 <!-- crate documentation start -->
-This is a module-level comment for a Rust lib
+Zapper API has a bug: it doesn't return the tokens with missing prices even with `includeTokensWithMissingPrices: true`. The final non-empty page’s cursor decodes to "ec6d06c9426495f2fffae17618ab5826:0". It is effectively <portfolio-id>:<balanceUSD>, so every zero-USD token shares the same cursor value. See also: "Zapper API totalCount investigation" thread.
 <!-- crate documentation end -->
 
 ## Installation

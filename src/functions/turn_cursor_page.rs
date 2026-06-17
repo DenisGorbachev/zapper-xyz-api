@@ -9,6 +9,8 @@ pub trait CursorPage {
 }
 
 pub trait CursorPaginatedRequest {
+    fn cursor_after(&self) -> Option<&str>;
+
     fn set_cursor_after(&mut self, after: String);
 }
 
@@ -19,9 +21,13 @@ where
 {
     use TurnCursorPageError::*;
     if page.has_next_page() {
-        let after = handle_opt!(page.end_cursor().map(ToOwned::to_owned), EndCursorNotFound, request);
-        request.set_cursor_after(after);
-        Ok(TurnedPage::next(page, request))
+        let after = handle_opt!(page.end_cursor(), EndCursorNotFound, request);
+        if request.cursor_after() == Some(after) {
+            Ok(TurnedPage::last(page))
+        } else {
+            request.set_cursor_after(after.to_owned());
+            Ok(TurnedPage::next(page, request))
+        }
     } else {
         Ok(TurnedPage::last(page))
     }
