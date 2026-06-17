@@ -644,6 +644,8 @@ A Rust crate that exports the types related to zapper.xyz API.
 
 Requirements:
 
+* Must define `struct Client`
+* Must define `struct RateLimits`
 * Must use `graphql_client` to execute requests
 * Must contain `graphql` dir
   * Must contain `schema.graphql` file
@@ -666,50 +668,8 @@ A Rust crate that provides a CLI for zapper.xyz API.
 
 * Must have a crate-level doc comment:
   ```text
-  Zapper API has a bug: it doesn't return the tokens with missing prices even with `includeTokensWithMissingPrices: true`. The final non-empty page’s cursor decodes to "ec6d06c9426495f2fffae17618ab5826:0". It is effectively <portfolio-id>:<balanceUSD>, so every zero-USD token shares the same cursor value. See also: "Zapper API totalCount investigation" thread.
+  Zapper API has a bug: it doesn't return the tokens with missing prices even with `includeTokensWithMissingPrices: true`. The final non-empty page’s cursor decodes to "ec6d06c9426495f2fffae17618ab5826:0". It is effectively "{portfolio-id}:{balanceUSD}", so every zero-USD token shares the same cursor value. See also: "Zapper API totalCount investigation" thread.
   ```
-
-### Key
-
-A type alias for API key as `secrecy::SecretString`.
-
-### Client
-
-A Rust struct that contains the fields for data that is shared between API requests.
-
-Requirements:
-
-* Must have attributes:
-  * `#[derive(Clone, Debug)]`
-* Must have fields:
-  * `pub inner: HttpClient` (`use reqwest::Client as HttpClient;`)
-  * `pub base: Url`
-  * `pub limits: RateLimits`
-* Must have methods:
-  * `pub fn new(key: impl Into<Key>) -> Result<Self, ClientNewError>`
-    * Must call `Self::try_from`
-  * `pub fn default_base_url() -> Url`
-    * `url!("https://public.zapper.xyz/graphql")` (use `url-macro` crate)
-* Must have impls:
-  * `TryFrom<Key>`
-    * Must call `Self::try_from((key, Self::default_base_url()))`
-  * `TryFrom<(Key, Url)>`
-    * Must construct `inner` client
-      * Must set the `x-zapper-api-key` header via `default_headers`
-        * Must mark the header as sensitive
-    * Must call `Self::from((inner, base))`
-  * `From<(HttpClient, Url)>`
-  * `From<(HttpClient, Url, RateLimits)>`
-
-### RateLimits
-
-A Rust struct that has one field per limit in [rate limits](./docs/build.zapper.xyz/rate-limits.md).
-
-* Must have attributes:
-  * `#[derive(Debug)]`
-* Every field must be a `LazyLock<DefaultDirectRateLimiter>` (`use governor::DefaultDirectRateLimiter`)
-* Must have an `impl Default`
-  * Must construct rate limiters according to documentation
 
 ### Query struct
 
@@ -757,6 +717,50 @@ A Rust struct that represents a CLI command.
 A Rust function that implements pagination for Zapper API.
 
 * Must stop if the new cursor is equal to the previous cursor (this is a bug in the API).
+
+## API concepts
+
+### Key
+
+A type alias for API key as `secrecy::SecretString`.
+
+### Client
+
+A Rust struct that contains the fields for data that is shared between API requests.
+
+Requirements:
+
+* Must have attributes:
+  * `#[derive(Debug)]`
+* Must have fields:
+  * `pub inner: HttpClient` (`use reqwest::Client as HttpClient;`)
+  * `pub base: Url`
+  * `pub limits: RateLimits`
+* Must have methods:
+  * `pub fn new(key: impl Into<Key>) -> Result<Self, ClientNewError>`
+    * Must call `Self::try_from`
+  * `pub fn default_base_url() -> Url` (`use url-macro::url`)
+* Must have impls:
+  * `TryFrom<Key>`
+    * Must call `Self::try_from((key, Self::default_base_url()))`
+  * `TryFrom<(Key, Url)>`
+    * Must construct `inner` client
+      * If the API key is passed via headers:
+        * Must set the API key header via `default_headers`
+          * Must mark the header as sensitive
+    * Must call `Self::from((inner, base))`
+  * `From<(HttpClient, Url)>`
+  * `From<(HttpClient, Url, RateLimits)>`
+
+### RateLimits
+
+A Rust struct that has one field per documented rate limit.
+
+* Must have attributes:
+  * `#[derive(Debug)]`
+* Every field must be a `LazyLock<DefaultDirectRateLimiter>` (`use governor::DefaultDirectRateLimiter`)
+* Must have an `impl Default`
+  * Must construct rate limiters according to documentation
 
 ## Error handling
 
@@ -2076,6 +2080,8 @@ non-empty-str = { version = "0.11", features = ["serde"] }
 derive_more = { version = "2", default-features = false, features = ["as_ref", "display", "from", "into"] }
 page-turner = "1"
 futures = { version = "0.3", default-features = false, features = ["std"] }
+# apigen is required for AGENTS.md
+apigen = { git = "https://github.com/DenisGorbachev/apigen" }
 
 #derive-getters = { version = "0.5.0", features = ["auto_copy_getters"] }
 #derive-new = "0.7.0"
@@ -2131,38 +2137,48 @@ fn verify_cli() {
 ### src/lib.rs
 
 ```rust
-//! Zapper API has a bug: it doesn't return the tokens with missing prices even with `includeTokensWithMissingPrices: true`. The final non-empty page’s cursor decodes to "ec6d06c9426495f2fffae17618ab5826:0". It is effectively <portfolio-id>:<balanceUSD>, so every zero-USD token shares the same cursor value. See also: "Zapper API totalCount investigation" thread.
+//! Zapper API has a bug: it doesn't return the tokens with missing prices even with `includeTokensWithMissingPrices: true`. The final non-empty page’s cursor decodes to "ec6d06c9426495f2fffae17618ab5826:0". It is effectively "{portfolio-id}:{balanceUSD}", so every zero-USD token shares the same cursor value. See also: "Zapper API totalCount investigation" thread.
 
 #![deny(clippy::arithmetic_side_effects)]
 
 mod address;
+
 pub use address::*;
 
 mod chain_id;
+
 pub use chain_id::*;
 
 mod client;
+
 pub use client::*;
 
 mod command;
+
 pub use command::*;
 
 mod key;
+
 pub use key::*;
 
 pub mod portfolio_v2_token_balances_by_token;
+
 pub use portfolio_v2_token_balances_by_token::portfolio_v2_token_balances_by_token as portfolio_v2_token_balances_by_token_types;
 pub use portfolio_v2_token_balances_by_token::*;
 
 mod page_size;
+
 pub use page_size::*;
 
 mod portfolio_v2_token_balances_by_token_request;
+
 pub use portfolio_v2_token_balances_by_token_request::*;
 
 mod rate_limits;
+
 pub use rate_limits::*;
 
 mod functions;
+
 pub use functions::*;
 ```

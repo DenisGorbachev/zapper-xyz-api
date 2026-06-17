@@ -12,7 +12,7 @@ use thiserror::Error;
 use url::Url;
 use url_macro::url;
 
-#[derive(Clone, Debug)]
+#[derive(Debug)]
 pub struct Client {
     pub inner: HttpClient,
     pub base: Url,

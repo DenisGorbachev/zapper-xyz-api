@@ -28,12 +28,6 @@ impl Default for RateLimits {
     }
 }
 
-impl Clone for RateLimits {
-    fn clone(&self) -> Self {
-        Self::default()
-    }
-}
-
 macro_rules! per_second_rate_limiter {
     ($function:ident, $requests_per_second:literal) => {
         fn $function() -> DefaultDirectRateLimiter {

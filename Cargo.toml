@@ -57,6 +57,8 @@ non-empty-str = { version = "0.11", features = ["serde"] }
 derive_more = { version = "2", default-features = false, features = ["as_ref", "display", "from", "into"] }
 page-turner = "1"
 futures = { version = "0.3", default-features = false, features = ["std"] }
+# apigen is required for AGENTS.md
+apigen = { git = "https://github.com/DenisGorbachev/apigen" }
 
 #derive-getters = { version = "0.5.0", features = ["auto_copy_getters"] }
 #derive-new = "0.7.0"

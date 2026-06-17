@@ -269,6 +269,7 @@ const parts = (await Promise.all([
   includeFileIfExists(".agents/docs.md"),
   includeFileIfExists(".agents/api.md"),
   includeFileIfExists(".agents/gotchas.md"),
+  includeCargoDependencyFileIfExists("apigen", "docs/concepts.md"),
   includeCargoDependencyFileIfExists("errgonomic", "DOCS.md"),
   Promise.resolve("## Project files"),
   includeFile("Cargo.toml"),
