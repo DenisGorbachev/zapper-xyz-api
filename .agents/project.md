@@ -90,7 +90,7 @@ A Rust struct that represents a CLI command.
 ## PortfolioCommand
 
 - Must have fields:
-  - `addresses: Vec<String>`
+  - `addresses: Vec<Address>`
 - Must have methods:
   - `run`
     - Must iterate over `addresses` and send requests for [`PortfolioV2TokenBalancesByToken` query](#portfoliov2tokenbalancesbytoken-query), passing exactly one address per request

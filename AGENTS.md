@@ -705,7 +705,7 @@ A Rust struct that represents a CLI command.
 ### PortfolioCommand
 
 * Must have fields:
-  * `addresses: Vec<String>`
+  * `addresses: Vec<Address>`
 * Must have methods:
   * `run`
     * Must iterate over `addresses` and send requests for [`PortfolioV2TokenBalancesByToken` query](#portfoliov2tokenbalancesbytoken-query), passing exactly one address per request
@@ -2062,7 +2062,7 @@ readme = { generate = true }
 
 [dependencies]
 derive-new = "0.7"
-derive_setters = "0.1.9"
+derive_setters = "0.1"
 graphql_client = { version = "0.16", features = ["graphql_query_derive"] }
 errgonomic = "0.5"
 governor = "0.10"
@@ -2071,7 +2071,6 @@ secrecy = "0.10"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 thiserror = "2"
-timestamp-please = { version = "0.2", features = ["serde"] }
 url = "2"
 url-macro = "0.2"
 clap = { version = "4", features = ["derive", "env"] }
@@ -2181,4 +2180,8 @@ pub use rate_limits::*;
 mod functions;
 
 pub use functions::*;
+
+mod constants;
+
+pub use constants::*;
 ```

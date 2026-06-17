@@ -1,3 +1,4 @@
+use crate::MAX_PAGE_SIZE;
 use core::num::NonZeroU8;
 use errgonomic::{handle, handle_bool, handle_opt};
 use serde::{Deserialize, Serialize};
@@ -5,9 +6,6 @@ use std::fmt::{Display, Formatter};
 use std::num::{ParseIntError, TryFromIntError};
 use std::str::FromStr;
 use thiserror::Error;
-
-/// `PortfolioV2TokenBalance.byToken(first)` documents a maximum of 100.
-pub const MAX_PAGE_SIZE: u8 = 100;
 
 #[derive(Serialize, Deserialize, Eq, PartialEq, Hash, Copy, Clone, Debug)]
 #[serde(try_from = "u64", into = "u64")]

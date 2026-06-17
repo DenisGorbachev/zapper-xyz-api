@@ -1929,16 +1929,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "timestamp-please"
-version = "0.2.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a52b5fd05a99165860ac1b36d424d07c12a7121b2e358ec526bf3fca5b08810a"
-dependencies = [
- "itoa",
- "serde",
-]
-
-[[package]]
 name = "tinystr"
 version = "0.8.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2534,7 +2524,6 @@ dependencies = [
  "serde",
  "serde_json",
  "thiserror 2.0.18",
- "timestamp-please",
  "tokio",
  "url",
  "url-macro",

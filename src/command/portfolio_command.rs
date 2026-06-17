@@ -1,9 +1,8 @@
-use crate::{Address, ChainId, Client, PageSize, PageTurnerPortfolioV2TokenBalancesByTokenRequestClientError, PortfolioV2TokenBalancesByTokenRequest};
+use crate::{Address, ChainId, Client, PageSize, PageTurnerPortfolioV2TokenBalancesByTokenRequestClientError, PortfolioV2TokenBalancesByTokenRequest, WriteJsonLineError, write_json_line};
 use clap::Parser;
 use errgonomic::handle;
 use futures::{TryStreamExt, pin_mut};
 use page_turner::PageTurner;
-use serde::Serialize;
 use std::io::{BufWriter, Write, stdout};
 use std::ops::Not;
 use std::process::ExitCode;
@@ -54,21 +53,6 @@ pub enum PortfolioCommandRunError {
     WriteJsonLineFailed { source: WriteJsonLineError },
     #[error("failed to flush stdout")]
     FlushStdoutFailed { source: std::io::Error },
-}
-
-pub fn write_json_line(writer: &mut impl Write, value: &impl Serialize) -> Result<(), WriteJsonLineError> {
-    use WriteJsonLineError::*;
-    handle!(serde_json::to_writer(&mut *writer, value), ToWriterFailed);
-    handle!(writeln!(writer), WriteNewlineFailed);
-    Ok(())
-}
-
-#[derive(Error, Debug)]
-pub enum WriteJsonLineError {
-    #[error("failed to write JSON to stdout")]
-    ToWriterFailed { source: serde_json::Error },
-    #[error("failed to write newline to stdout")]
-    WriteNewlineFailed { source: std::io::Error },
 }
 
 mod portfolio_address_token_balances_page;
