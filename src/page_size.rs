@@ -2,7 +2,7 @@ use crate::MAX_PAGE_SIZE;
 use core::num::NonZeroU8;
 use errgonomic::{handle, handle_bool, handle_opt};
 use serde::{Deserialize, Serialize};
-use std::fmt::{Display, Formatter};
+use std::fmt::{Display, Formatter, Result as FmtResult};
 use std::num::{ParseIntError, TryFromIntError};
 use std::str::FromStr;
 use thiserror::Error;
@@ -25,7 +25,7 @@ impl Default for PageSize {
 }
 
 impl Display for PageSize {
-    fn fmt(&self, f: &mut Formatter<'_>) -> core::fmt::Result {
+    fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
         Display::fmt(&self.get(), f)
     }
 }

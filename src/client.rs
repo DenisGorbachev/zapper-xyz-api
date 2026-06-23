@@ -1,7 +1,7 @@
 use crate::portfolio_v2_token_balances_by_token_types::{PortfolioV2TokenBalancesByTokenPortfolioV2TokenBalancesByToken, ResponseData, Variables};
 use crate::{Key, PortfolioV2TokenBalancesByToken, PortfolioV2TokenBalancesByTokenRequest, RateLimits, TurnCursorPageError, turn_cursor_page};
 use errgonomic::{handle, handle_opt, handle_opt_take};
-use graphql_client::{GraphQLQuery, QueryBody, Response};
+use graphql_client::{Error as GraphqlError, GraphQLQuery, QueryBody, Response};
 use page_turner::{PageTurner, TurnedPageResult};
 use reqwest::Client as HttpClient;
 use reqwest::header::{HeaderMap, HeaderName, HeaderValue};
@@ -154,7 +154,7 @@ pub enum ClientPortfolioV2TokenBalancesByTokenError {
     #[error("failed to deserialize portfolioV2 response")]
     DeserializeResponseFailed { source: reqwest::Error, body: QueryBody<Variables> },
     #[error("portfolioV2 response contains {len} GraphQL errors", len = errors.len())]
-    ResponseContainsErrors { errors: Vec<graphql_client::Error>, body: QueryBody<Variables> },
+    ResponseContainsErrors { errors: Vec<GraphqlError>, body: QueryBody<Variables> },
     #[error("portfolioV2 response did not contain data")]
     ResponseDataNotFound { body: QueryBody<Variables> },
 }

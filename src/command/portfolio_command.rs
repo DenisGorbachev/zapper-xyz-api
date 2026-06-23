@@ -3,7 +3,7 @@ use clap::Parser;
 use errgonomic::handle;
 use futures::{TryStreamExt, pin_mut};
 use page_turner::PageTurner;
-use std::io::{BufWriter, Write, stdout};
+use std::io::{BufWriter, Error as IoError, Write, stdout};
 use std::ops::Not;
 use std::process::ExitCode;
 use thiserror::Error;
@@ -52,7 +52,7 @@ pub enum PortfolioCommandRunError {
     #[error("failed to write portfolio address token page")]
     WriteJsonLineFailed { source: WriteJsonLineError },
     #[error("failed to flush stdout")]
-    FlushStdoutFailed { source: std::io::Error },
+    FlushStdoutFailed { source: IoError },
 }
 
 mod portfolio_address_token_balances_page;
