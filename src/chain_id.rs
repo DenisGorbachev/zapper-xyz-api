@@ -1,7 +1,7 @@
 use core::num::NonZeroI64;
 use errgonomic::{handle, handle_bool, handle_opt};
 use serde::{Deserialize, Serialize};
-use std::fmt::{Display, Formatter, Result as FmtResult};
+use std::fmt::{self, Display, Formatter};
 use std::num::ParseIntError;
 use std::str::FromStr;
 use thiserror::Error;
@@ -17,7 +17,7 @@ impl ChainId {
 }
 
 impl Display for ChainId {
-    fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         Display::fmt(&self.get(), f)
     }
 }

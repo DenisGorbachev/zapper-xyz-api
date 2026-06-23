@@ -1,6 +1,6 @@
 use errgonomic::handle;
 use serde::Serialize;
-use std::io::{Error as IoError, Write};
+use std::io::{self, Write};
 use thiserror::Error;
 
 pub fn write_json_line(writer: &mut impl Write, value: &impl Serialize) -> Result<(), WriteJsonLineError> {
@@ -15,5 +15,5 @@ pub enum WriteJsonLineError {
     #[error("failed to write JSON")]
     ToWriterFailed { source: serde_json::Error },
     #[error("failed to write newline")]
-    WriteNewlineFailed { source: IoError },
+    WriteNewlineFailed { source: io::Error },
 }
