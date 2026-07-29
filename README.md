@@ -28,7 +28,7 @@ cargo add zapper-xyz-api
 ## Usage
 
 ```shell
-API client for zapper.xyz
+An API client for zapper.xyz.
 
 Usage: zapper-xyz-api --key <KEY> <COMMAND>
 
@@ -41,6 +41,10 @@ Options:
   -h, --help       Print help
   -V, --version    Print version
 ```
+
+## Other packages
+
+This workspace has no other packages.
 
 ## Gratitude
 
