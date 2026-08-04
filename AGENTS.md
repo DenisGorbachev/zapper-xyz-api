@@ -62,7 +62,13 @@ Notes:
 * Don't edit the files in the following top-level dirs: `specs`, `.agents`
 * If a later instruction overrides the former instruction: follow the later instruction (last override wins)
 * If I explicitly ask to update the code in a way that deviates from the spec, update both the code and the spec
-* If you need to patch a dependency, tell me about it, but don't do it without my explicit permission
+* If you need to patch a dependency:
+  * If the dependency is owned by Denis Gorbachev:
+    * Then:
+      * Find it in `~/workspace`
+      * Apply edits
+      * Add a local override via `[patch]` in `.cargo/config.local.toml`
+    * Else: tell me about it, but don't patch it without my explicit permission
 * If you notice unexpected edits, keep them and don't mention them
 * If you notice incorrect code, tell me
 * If you have to apply a workaround, add a comment next to the workaround that explains why it is necessary, and also mention the workaround in your final report
@@ -77,12 +83,18 @@ Notes:
   * Examples
     * A task to write `impl From<Foo> for Bar` where `Foo` can't actually be infallibly converted to `Bar` (would require calling `unwrap`, which is bad) - in this case you should write `impl TryFrom<Foo> for Bar` and reply with "Foo can't be infallibly converted to Bar, so I implemented a fallible conversion instead".
     * A task to write a trait impl that only returns an error - in this case you should not write the trait impl but reply with "trait X can't be implemented for Foo because ..."
+* If a sentence starts with "Proposal: ":
+  * Evaluate it thorougly.
+  * If you agree:
+    * Then: implement it.
+    * Else: explain why you didn't implement it and brainstorm solutions.
 * If you resolve the blockers, remove them from blockers.md
 
 #### Review workflow
 
 * Output a full list of findings (not a shortlist)
-* Every finding in the full list must be formatted as `{number}. [{priority}] {title}. {body} ({references}). Proposed fixes: {fixes}` (I will identify the findings by number in my answer)
+* Every finding in the full list must be formatted as `### {ctid}\n\n[{priority}] {title}. {body} ({references}). Proposed fixes: {fixes}` (I will identify the findings by chat thread ID in my answer)
+  * `ctid` must be a [chat thread id](#chat-thread-id)
   * `priority` must be one of `P0`, `P1`, `P2`, `P3`.
   * `references` must be a comma-separated list of `reference`
   * `reference` must must be formatted as `{path}:{line}`
@@ -90,14 +102,15 @@ Notes:
   * `line` must be the first line of the relevant code or text block
   * `fixes` must be one of the following:
     * If there is at least one proposed fix:
-      * Then: newline and a Markdown nested list of fixes where each fix must have a format `{number}. {description}` (the numbers should start from 1 for each list of fixes)
+      * Then: "\n\n" and a Markdown nested list of fixes where each fix must have a format `{number}. {description}` (the numbers should start from 1 for each list of fixes)
       * Else: the exact text "none."
 * If there are no findings, then start your reply with "No findings"
 * If I reply to your review with an ordered list, process each item in the following way:
   * "+" - "Think about this finding again, then apply the best fix according to your thinking process"
   * "+ {number}" - "Apply proposed fix at {number}"
   * "-" - "Don't apply any fixes"
-  * other - respond normally (keep the number in your response)
+  * other - respond normally (keep the `ctid` in your response)
+* If there are no more actionable items in the thread identified by a specific `ctid`: drop this `ctid` from your response.
 
 #### Debugging workflow
 
@@ -110,6 +123,7 @@ Notes:
 #### Messages from agent to user
 
 * Use `~` in paths
+* Give each independently addressable item in a multi-item message a unique [chat thread ID](#chat-thread-id)
 
 #### Commands
 
@@ -453,6 +467,9 @@ A function marked with `#[test]` or `#[tokio::test]`.
 
 * Write `macro_rules!` macros to reduce boilerplate
 * If you see similar code in different places, write a macro and replace the similar code with a macro call
+* If the macros has variadic args:
+  * Then: do add `$(,)?`
+  * Else: don't add `$(,)?`
 
 #### Shell
 
