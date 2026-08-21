@@ -5,11 +5,10 @@ env = "exec"
 
 [providers]
 keychain = { type = "keychain", service = "zapper-xyz-api" }
-pass = { type = "password-store", prefix = "zapper-xyz-api/" }
 age = { type = "age", recipients = ["age1sf4r4amev2svqr6llwg8hgtz9n7p5qdh7hh0mavcshzfrmgfduksnq3hql","age1605gsnxpe536sprwccyumq74veg0g80u55n8ggems0t8deau6qdsfnq3m3","age1w394fkfv50kh00wfdxn3ffzgywenapfv77cjdhl9usrpu2u694vqslg8sr"]}
 
 [profiles.test.secrets]
-ZAPPER_API_KEY= { provider = "pass", value = "TEST_ZAPPER_API_KEY" }
+ZAPPER_API_KEY= { provider = "age", value = "YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBNQUxscSt3SVIrRWFlb2ppR3A3cG1kME93WHlTemRIbEJPNFpQemFyUHlnClhUQ05aQWV4Yk43SmtnSzVDT0JpTjcySFVXcDQyd0k5a3MyVi90S25wYTQKLT4gWDI1NTE5IHV6RUlPcmg4Z0lqelZsaUNWcExoNlBOYTRic0VSQ2JsSXJ4ZXZoMEpVMGsKalZaUEJ1TGdRNzNIZ09pUXQ3U1VyU3RmbkwzY1RmNVd1eEtxSEdTQTRpRQotPiBYMjU1MTkgeGFZU1ZnNDNwYktRNEVyN1dsa01veWtKQjNxWlFjM05DcDF4cFNYVnB5bwo2Qjg2MEJLYW5jNXVjSWxTelZ1QVZUR2FrMk54djkzVWhKdFVQV0NhTFNVCi0+ICVdMS1ncmVhc2UKakNpaXpHV2hxYVMzZlczS0ZtdTFmaUN0WmRSam1JcWp2TUtMWENYYnhacmx1TkdBY0JZTzJFY0ZRREdyU1F6MApidDlHYjFFbnR3czkyRzVCQXJNZE53T0ZtT0U0N0ZNCi0tLSBKd0M0a1hVYm5JN1JQZlBoOTdJQmtyMjZCL0JTU21KM0NHNUFhYTQ3YUxBCmuVzt+dkE6TyW+4yj8Kc8e72OrITEdwaPoRe3mcc7GRyloEgeg2Ck7wQq4sMZPZ4oKF1NG+Rr1Z0ZCjYdR457DwGExP" }
 
 [profiles.prod.secrets]
 ZAPPER_API_KEY = { provider = "keychain", value = "PROD_ZAPPER_API_KEY" }

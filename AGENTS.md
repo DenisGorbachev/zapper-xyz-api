@@ -482,25 +482,60 @@ A function marked with `#[test]` or `#[tokio::test]`.
 
 - Don't enforce a line length limit when writing code, comments or documentation
 
+#### Chat thread id
+
+- Must be a string
+- Must contain at least 3 characters
+- Must contain only uppercase characters
+
+Examples:
+
+- `RVC`
+- `AKE`
+- `LMY`
+
+Notes:
+
+- Should match the thread topic
+
+#### findings.md
+
+- If it exists:
+  - Must contain a non-empty list of [findings](#finding)
+
+#### Finding
+
+- Must be formatted as `### {ctid}\n\n[{priority}] {title}. {body} ({references}). Proposed fixes: {fixes}`
+  - `ctid` must be a [chat thread id](#chat-thread-id)
+  - `priority` must be one of `P0`, `P1`, `P2`, `P3`.
+  - `references` must be a comma-separated list of `reference`
+  - `reference` must must be formatted as `{path}:{line}`
+  - `path` must be a file path relative to your working directory
+  - `line` must be the first line of the relevant code or text block
+  - `fixes` must be one of the following:
+    - If there is at least one proposed fix:
+      - Then: "\n\n" and a Markdown nested list of fixes where each fix must have a format `{number}. {description}` (the numbers should start from 1 for each list of fixes)
+      - Else: the exact text "none."
+
 ### Guidelines for `serde`
 
 #### Requirements
 
-* Every input data type must derive `Serialize` and `Deserialize`
-* Every `Option`-wrapped field must have attributes:
-  * `#[serde(skip_serializing_if = "Option::is_none")]`
-* Every `OffsetDateTime` field must have attributes:
-  * `#[serde(with = "time::serde::rfc3339")]`
-* Every `Option<OffsetDateTime>` field must have attributes:
-  * `#[serde(with = "time::serde::rfc3339::option")]`
-* Every field that stores a physical value must be serialized as a map that includes at least two fields: `value` and `unit`
-  * `value` must be a primitive type
-  * `unit` must be a string that contains the unit name in singular form (for example: "nanosecond", "second", "minute", "kilogram", "meter")
-    * `unit` may contain a prefix (for example: "nano", "kilo")
+- Every input data type must derive `Serialize` and `Deserialize`
+- Every `Option`-wrapped field must have attributes:
+  - `#[serde(skip_serializing_if = "Option::is_none")]`
+- Every `OffsetDateTime` field must have attributes:
+  - `#[serde(with = "time::serde::rfc3339")]`
+- Every `Option<OffsetDateTime>` field must have attributes:
+  - `#[serde(with = "time::serde::rfc3339::option")]`
+- Every field that stores a physical value must be serialized as a map that includes at least two fields: `value` and `unit`
+  - `value` must be a primitive type
+  - `unit` must be a string that contains the unit name in singular form (for example: "nanosecond", "second", "minute", "kilogram", "meter")
+    - `unit` may contain a prefix (for example: "nano", "kilo")
 
 #### Notes
 
-* It is recommended to use `serde_with` to reduce the code size by avoiding custom `Serialize`/`Deserialize` impls
+- It is recommended to use `serde_with` to reduce the code size by avoiding custom `Serialize`/`Deserialize` impls
 
 ### Guidelines for `clap`
 
@@ -509,6 +544,10 @@ A function marked with `#[test]` or `#[tokio::test]`.
 - For each enum in project:
   - If enum has only unit variants and doesn't implement `Error`
     - Then: it must derive `ValueEnum` with `#[value(rename_all = "kebab-case")]`
+- For each field in a type that derives `Parser`:
+  - If this field's type is local:
+    - Then: this type must implement `FromStr`
+      - Rationale: `clap` parses types that implement `FromStr` directly without `value_parser`
 
 ### CLI guidelines
 
@@ -2219,12 +2258,14 @@ if_missing = "error"
 env = "exec"
 
 [providers]
-keychain = { type = "keychain", service = "rust-private-lib-template" }
-pass = { type = "password-store", prefix = "rust-private-lib-template/" }
-age = { type = "age", recipients = [
-    "age1sf4r4amev2svqr6llwg8hgtz9n7p5qdh7hh0mavcshzfrmgfduksnq3hql",
-    "age1605gsnxpe536sprwccyumq74veg0g80u55n8ggems0t8deau6qdsfnq3m3"
-] }
+keychain = { type = "keychain", service = "zapper-xyz-api" }
+age = { type = "age", recipients = ["age1sf4r4amev2svqr6llwg8hgtz9n7p5qdh7hh0mavcshzfrmgfduksnq3hql","age1605gsnxpe536sprwccyumq74veg0g80u55n8ggems0t8deau6qdsfnq3m3","age1w394fkfv50kh00wfdxn3ffzgywenapfv77cjdhl9usrpu2u694vqslg8sr"]}
+
+[profiles.test.secrets]
+ZAPPER_API_KEY= { provider = "age", value = "YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBNQUxscSt3SVIrRWFlb2ppR3A3cG1kME93WHlTemRIbEJPNFpQemFyUHlnClhUQ05aQWV4Yk43SmtnSzVDT0JpTjcySFVXcDQyd0k5a3MyVi90S25wYTQKLT4gWDI1NTE5IHV6RUlPcmg4Z0lqelZsaUNWcExoNlBOYTRic0VSQ2JsSXJ4ZXZoMEpVMGsKalZaUEJ1TGdRNzNIZ09pUXQ3U1VyU3RmbkwzY1RmNVd1eEtxSEdTQTRpRQotPiBYMjU1MTkgeGFZU1ZnNDNwYktRNEVyN1dsa01veWtKQjNxWlFjM05DcDF4cFNYVnB5bwo2Qjg2MEJLYW5jNXVjSWxTelZ1QVZUR2FrMk54djkzVWhKdFVQV0NhTFNVCi0+ICVdMS1ncmVhc2UKakNpaXpHV2hxYVMzZlczS0ZtdTFmaUN0WmRSam1JcWp2TUtMWENYYnhacmx1TkdBY0JZTzJFY0ZRREdyU1F6MApidDlHYjFFbnR3czkyRzVCQXJNZE53T0ZtT0U0N0ZNCi0tLSBKd0M0a1hVYm5JN1JQZlBoOTdJQmtyMjZCL0JTU21KM0NHNUFhYTQ3YUxBCmuVzt+dkE6TyW+4yj8Kc8e72OrITEdwaPoRe3mcc7GRyloEgeg2Ck7wQq4sMZPZ4oKF1NG+Rr1Z0ZCjYdR457DwGExP" }
+
+[profiles.prod.secrets]
+ZAPPER_API_KEY = { provider = "keychain", value = "PROD_ZAPPER_API_KEY" }
 ```
 
 #### Cargo.toml
@@ -2326,24 +2367,6 @@ apigen = { git = "https://github.com/DenisGorbachev/apigen" }
 #strum = { version = "0.27.2", features = ["derive"] }
 #stub-macro = { version = "0.2.1" }
 #subtype = { git = "https://github.com/DenisGorbachev/subtype" }
-```
-
-#### fnox.toml
-
-```toml
-#:schema https://fnox.jdx.dev/schema.json
-
-if_missing = "error"
-
-[providers]
-keychain = { type = "keychain", service = "zapper-xyz-api" }
-pass = { type = "password-store", prefix = "zapper-xyz-api/" }
-
-[profiles.test.secrets]
-ZAPPER_API_KEY= { provider = "pass", value = "TEST_ZAPPER_API_KEY" }
-
-[profiles.prod.secrets]
-ZAPPER_API_KEY = { provider = "keychain", value = "PROD_ZAPPER_API_KEY" }
 ```
 
 #### src/lib.rs
