@@ -68,7 +68,7 @@ workspace = true
 derive-new = "0.7"
 derive_setters = "0.1"
 graphql_client = { version = "0.16", features = ["graphql_query_derive"] }
-errgonomic = "0.5"
+errgonomic = "0.5.3"
 governor = "0.10"
 reqwest = { version = "0.13", features = ["json", "query"] }
 secrecy = "0.10"

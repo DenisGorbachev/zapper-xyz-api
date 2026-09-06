@@ -67,7 +67,7 @@ dependencies = [
  "derive-getters",
  "derive-new",
  "derive_more 2.1.1",
- "errgonomic 0.5.1 (git+https://github.com/DenisGorbachev/errgonomic)",
+ "errgonomic 0.5.1",
  "futures",
  "itertools",
  "quick-xml",
@@ -431,8 +431,7 @@ checksum = "877a4ace8713b0bcf2a4e7eec82529c029f1d0619886d18145fea96c3ffe5c0f"
 [[package]]
 name = "errgonomic"
 version = "0.5.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "74b33711745064fd87e330345058524fb009a7e8767c3ede875c61550b179d45"
+source = "git+https://github.com/DenisGorbachev/errgonomic#2b30275ee759decf53a39d72b19a4af8c637195d"
 dependencies = [
  "cfg-if",
  "tempfile",
@@ -441,8 +440,9 @@ dependencies = [
 
 [[package]]
 name = "errgonomic"
-version = "0.5.1"
-source = "git+https://github.com/DenisGorbachev/errgonomic#2b30275ee759decf53a39d72b19a4af8c637195d"
+version = "0.5.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "eec2d86c5cf47aed488f1b449df946eaef15aabd96a4fa13aa3d906a03a90618"
 dependencies = [
  "cfg-if",
  "tempfile",
@@ -456,7 +456,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "39cab71617ae0d63f51a36d69f866391735b51691dbda63cf6f96d042b63efeb"
 dependencies = [
  "libc",
- "windows-sys 0.52.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -1503,7 +1503,7 @@ dependencies = [
  "errno",
  "libc",
  "linux-raw-sys",
- "windows-sys 0.52.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -1560,7 +1560,7 @@ dependencies = [
  "security-framework",
  "security-framework-sys",
  "webpki-root-certs",
- "windows-sys 0.52.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -1885,7 +1885,7 @@ dependencies = [
  "getrandom 0.3.4",
  "once_cell",
  "rustix",
- "windows-sys 0.52.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -2269,7 +2269,7 @@ version = "0.1.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c2a7b1c03c876122aa43f3020e6c3c3ee5c05081c9a00739faf7503aeba10d22"
 dependencies = [
- "windows-sys 0.52.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -2439,7 +2439,7 @@ dependencies = [
  "derive-new",
  "derive_more 2.1.1",
  "derive_setters",
- "errgonomic 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "errgonomic 0.5.3",
  "futures",
  "governor",
  "graphql_client",
