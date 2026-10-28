@@ -256,7 +256,7 @@ const parts = (await Promise.all([
       includeFileIfExists(".agents/docs.md"),
       includeFileIfPackageProfileIsEnabled("api-client", ".agents/api.md"),
       includeFileIfExists(".agents/gotchas.md"),
-      includeCargoDependencyFileIfExists("apigen", "docs/concepts.md"),
+      includeFileFromCargoDependencyIfCargoDependencyExists("apigen", "docs/concepts.md"),
       includeFileFromCargoDependencyIfCargoDependencyExists("errgonomic", "internal/guidelines.md"),
       includeFileFromCargoDependencyIfCargoDependencyExists("errgonomic", "internal/repomix.md", 4),
     ],
@@ -273,6 +273,7 @@ const parts = (await Promise.all([
     [
       includeFile("mise.toml"),
       includeFile("fnox.toml"),
+      includeFileIfExists(join(homePath, ".cargo", "config.toml")),
       includeAllCargoFiles(["Cargo.toml"], 3),
       includeAllCargoFiles(["src/lib.rs", "src/main.rs"], 3),
     ],
