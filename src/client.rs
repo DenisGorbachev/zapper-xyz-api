@@ -148,13 +148,13 @@ impl From<(HttpClient, Url, RateLimits)> for Client {
 #[derive(Error, Debug)]
 pub enum ClientPortfolioV2TokenBalancesByTokenError {
     #[error("failed to send portfolioV2 request")]
-    SendRequestFailed { source: reqwest::Error, body: QueryBody<Variables> },
+    SendRequestFailed { source: reqwest::Error, body: Box<QueryBody<Variables>> },
     #[error("portfolioV2 response status is not successful")]
-    ErrorForStatusFailed { source: reqwest::Error, body: QueryBody<Variables> },
+    ErrorForStatusFailed { source: reqwest::Error, body: Box<QueryBody<Variables>> },
     #[error("failed to deserialize portfolioV2 response")]
-    DeserializeResponseFailed { source: reqwest::Error, body: QueryBody<Variables> },
+    DeserializeResponseFailed { source: reqwest::Error, body: Box<QueryBody<Variables>> },
     #[error("portfolioV2 response contains {len} GraphQL errors", len = errors.len())]
-    ResponseContainsErrors { errors: Vec<GraphqlError>, body: QueryBody<Variables> },
+    ResponseContainsErrors { errors: Vec<GraphqlError>, body: Box<QueryBody<Variables>> },
     #[error("portfolioV2 response did not contain data")]
-    ResponseDataNotFound { body: QueryBody<Variables> },
+    ResponseDataNotFound { body: Box<QueryBody<Variables>> },
 }

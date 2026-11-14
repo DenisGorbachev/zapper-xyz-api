@@ -1558,8 +1558,7 @@ fnox = "1.33.1"
 fd = "10.4.2"
 "github:ewhauser/shuck" = "0.2.2"
 "aqua:nushell/nushell" = "0.116.1"
-# nu-lint's dependencies require a newer compiler than this project's toolchain.
-"cargo:nu-lint" = { version = "1.8.0", install_env = { RUSTUP_TOOLCHAIN = "1.99.1" } }
+"cargo:nu-lint" = "1.8.0"
 "github:nushell/nufmt" = "0.1.6"
 "aqua:rvben/rumdl" = "0.3.0"
 "npm:@commitlint/config-conventional" = "19.6.0"
@@ -1771,6 +1770,9 @@ name = "zapper-xyz-api"
 title = "API client for zapper.xyz"
 readme = { generate = true }
 
+[workspace.lints.cargo]
+unused_dependencies = "deny"
+
 [workspace.lints.rust]
 redundant_imports = "deny"
 unused_import_braces = "deny"
@@ -1778,6 +1780,8 @@ unused_import_braces = "deny"
 # unused_qualifications = "deny"
 
 [workspace.lints.clippy]
+# Rust 1.100 reports redundant fields inside derive macros: https://github.com/rust-lang/rust-clippy/issues/17525.
+redundant_field_names = "allow"
 absolute_paths = "deny"
 arithmetic_side_effects = "deny"
 
@@ -1818,8 +1822,6 @@ non-empty-str = { version = "0.11", features = ["serde"] }
 derive_more = { version = "2", default-features = false, features = ["as_ref", "display", "from", "into"] }
 page-turner = "1"
 futures = { version = "0.3", default-features = false, features = ["std"] }
-# apigen is required for AGENTS.md
-apigen = { git = "https://github.com/DenisGorbachev/apigen" }
 
 #derive-getters = { version = "0.5.0", features = ["auto_copy_getters"] }
 #derive-new = "0.7.0"
@@ -1830,6 +1832,10 @@ apigen = { git = "https://github.com/DenisGorbachev/apigen" }
 #strum = { version = "0.27.2", features = ["derive"] }
 #stub-macro = { version = "0.2.1" }
 #subtype = { git = "https://github.com/DenisGorbachev/subtype" }
+
+# Resolve apigen for AGENTS.md generation without compiling it.
+[target.'cfg(false)'.dependencies]
+apigen = { git = "https://github.com/DenisGorbachev/apigen" }
 ```
 
 ### src/lib.rs

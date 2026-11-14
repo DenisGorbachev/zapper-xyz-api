@@ -48,7 +48,7 @@ impl PortfolioCommand {
 #[derive(Error, Debug)]
 pub enum PortfolioCommandRunError {
     #[error("failed to read the next portfolioV2 token balances by token page")]
-    TryNextFailed { source: PageTurnerPortfolioV2TokenBalancesByTokenRequestClientError },
+    TryNextFailed { source: Box<PageTurnerPortfolioV2TokenBalancesByTokenRequestClientError> },
     #[error("failed to write portfolio address token page")]
     WriteJsonLineFailed { source: WriteJsonLineError },
     #[error("failed to flush stdout")]
