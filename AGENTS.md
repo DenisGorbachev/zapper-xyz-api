@@ -1733,7 +1733,7 @@ ZAPPER_API_KEY = { provider = "keychain", value = "PROD_ZAPPER_API_KEY" }
 resolver = "3"
 
 [workspace.package]
-version = "0.1.0"
+version = "0.1.1"
 edition = "2024"
 rust-version = "1.93.1"
 license = "Apache-2.0 OR MIT"
@@ -1834,7 +1834,7 @@ futures = { version = "0.3", default-features = false, features = ["std"] }
 #subtype = { git = "https://github.com/DenisGorbachev/subtype" }
 
 # Resolve apigen for AGENTS.md generation without compiling it.
-[target.'cfg(false)'.dependencies]
+[target.'cfg(false)'.dev-dependencies]
 apigen = { git = "https://github.com/DenisGorbachev/apigen" }
 ```
 

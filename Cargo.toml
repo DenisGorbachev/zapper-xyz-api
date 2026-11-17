@@ -103,5 +103,5 @@ futures = { version = "0.3", default-features = false, features = ["std"] }
 #subtype = { git = "https://github.com/DenisGorbachev/subtype" }
 
 # Resolve apigen for AGENTS.md generation without compiling it.
-[target.'cfg(false)'.dependencies]
+[target.'cfg(false)'.dev-dependencies]
 apigen = { git = "https://github.com/DenisGorbachev/apigen" }
